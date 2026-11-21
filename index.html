@@ -60,6 +60,8 @@ p{margin:0}
 .pt{display:none;flex-wrap:wrap;gap:6px;align-items:center;margin:-4px 0 12px;padding:6px 8px;border-radius:14px;border:1px dashed var(--sun);font-size:13px}
 .pt b{flex:1;min-width:6em}.pt button,.lay button,.lay select{min-height:30px;padding:2px 10px;border-radius:10px;border:1px solid var(--edge);background:var(--glass2);cursor:pointer;font-size:13px;color:var(--ink)}
 body.editing .pt{display:flex}body.editing .panel{outline:2px dashed color-mix(in srgb,var(--sun) 55%,transparent);outline-offset:3px}
+.xp{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px 24px;margin-bottom:16px}.xp[hidden]{display:none}
+.xp textarea{width:100%;font:13px/1.4 ui-monospace,monospace;color:var(--ink);padding:8px 10px;border-radius:12px;border:1px solid var(--edge);background:var(--glass2);resize:vertical;word-break:break-all}
 .lay{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:16px;font-size:14px;padding:12px 16px}.lay[hidden]{display:none}.lay .grp{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.lay button[aria-pressed=true]{background:var(--sun);color:#fff}
 @container (max-width:430px){.pie{grid-template-columns:minmax(0,1fr)}.pw{margin:0 auto}.add{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.add input:first-child{grid-column:1/-1}}
 .big{font-size:clamp(34px,3.6vw,50px);font-weight:700;white-space:nowrap}
@@ -194,9 +196,15 @@ body{padding-bottom:96px}
 <div class="wrap">
  <header class="top">
   <div><h1>Verão no Azul</h1><p class="sub">Gastos do verão, dias de trabalho e poupança num lugar só.</p></div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><div class="skins" id="skins" role="group" aria-label="Tema"></div><button class="btn" id="org">Organizar painéis</button><button class="btn" id="copy">Copiar resumo</button><button class="btn" id="reset">Restaurar exemplo</button></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><div class="skins" id="skins" role="group" aria-label="Tema"></div><button class="btn" id="org">Organizar painéis</button><button class="btn" id="xbtn">Exportar / Importar</button><button class="btn" id="copy">Copiar resumo</button><button class="btn" id="reset">Restaurar exemplo</button></div>
  </header>
 
+ <div class="glass xp" id="xp" hidden>
+  <div><h2>Exportar</h2><p class="note" style="margin:0 0 8px">Copie esse código e mande pra você mesmo (WhatsApp, e-mail). Tem tudo: gastos, categorias, trabalho, poupança, tema e painéis.</p>
+   <textarea id="xout" readonly rows="3" aria-label="Código pra exportar"></textarea><div class="ib"><button class="btn pri" type="button" id="xcopy">Copiar código</button></div></div>
+  <div><h2>Importar</h2><p class="note" style="margin:0 0 8px">Cole aqui o código exportado no outro aparelho. Isso substitui os dados deste aparelho (dá pra desfazer).</p>
+   <textarea id="xin" rows="3" placeholder="Cole o código aqui" aria-label="Código pra importar"></textarea><div class="ib"><button class="btn pri" type="button" id="ximp">Importar</button><button class="btn" type="button" id="xclose">Fechar</button></div></div>
+ </div>
  <div class="lay glass" id="lay" hidden></div>
  <main class="board" id="board">
   <div class="glass panel" data-p="gastos">
@@ -639,6 +647,14 @@ $('#lay').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)
  if(b.dataset.cols)L.cols=+b.dataset.cols;else if(b.dataset.show)L.hidden=L.hidden.filter(x=>x!==b.dataset.show);else if(b.id==='ldef'){S.layout=defLayout()}else if(b.id==='ldone')editing=false;applyLayout();save()});
 $('#lay').addEventListener('change',e=>{if(e.target.id==='lw'){S.layout.width=e.target.value;applyLayout();save()}});
 let rz=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(applyLayout,120)});
+const enc=o=>'VNA1:'+btoa(unescape(encodeURIComponent(JSON.stringify(o))));
+const dec=t=>{t=t.trim();if(t.startsWith('{'))return JSON.parse(t);return JSON.parse(decodeURIComponent(escape(atob(t.replace(/^VNA1:/,'').replace(/\s+/g,'')))))};
+$('#xbtn').onclick=()=>{const x=$('#xp');x.hidden=!x.hidden;if(!x.hidden){$('#xout').value=enc(S);$('#xin').value='';scrollTo({top:0,behavior:'smooth'})}};
+$('#xclose').onclick=()=>{$('#xp').hidden=true};
+$('#xcopy').onclick=()=>{const ta=$('#xout');ta.value=enc(S);const ok=()=>toast('Código copiado',false),fb=()=>{ta.focus();ta.select();try{document.execCommand('copy');ok()}catch(e){toast('Selecione e copie o código manualmente',false)}};try{navigator.clipboard.writeText(ta.value).then(ok,fb)}catch(e){fb()}};
+$('#ximp').onclick=()=>{let d;try{d=dec($('#xin').value)}catch(e){return toast('Código inválido. Confira se colou ele inteiro.',false)}
+ if(!d||!Array.isArray(d.items))return toast('Código inválido. Confira se colou ele inteiro.',false);
+ snapUndo();S=fix(d);fillControls();renderItems();renderCalc();$('#xp').hidden=true;toast(`Importado: ${S.items.length} itens`,true)};
 const _fc=fillControls;fillControls=function(){_fc();applySkin();applyLayout()};
 fillControls();renderItems();renderCalc();
 }
