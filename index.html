@@ -200,10 +200,13 @@ body{padding-bottom:96px}
  </header>
 
  <div class="glass xp" id="xp" hidden>
-  <div><h2>Exportar</h2><p class="note" style="margin:0 0 8px">Copie esse código e mande pra você mesmo (WhatsApp, e-mail). Tem tudo: gastos, categorias, trabalho, poupança, tema e painéis.</p>
-   <textarea id="xout" readonly rows="3" aria-label="Código pra exportar"></textarea><div class="ib"><button class="btn pri" type="button" id="xcopy">Copiar código</button></div></div>
-  <div><h2>Importar</h2><p class="note" style="margin:0 0 8px">Cole aqui o código exportado no outro aparelho. Isso substitui os dados deste aparelho (dá pra desfazer).</p>
-   <textarea id="xin" rows="3" placeholder="Cole o código aqui" aria-label="Código pra importar"></textarea><div class="ib"><button class="btn pri" type="button" id="ximp">Importar</button><button class="btn" type="button" id="xclose">Fechar</button></div></div>
+  <div><h2>1. No aparelho que tem os dados: exportar</h2><p class="note" style="margin:0 0 8px">Mande o link ou o código pra você mesmo (WhatsApp, e-mail).</p>
+   <div class="ib"><button class="btn pri" type="button" id="xlink" hidden>Copiar link</button><button class="btn" type="button" id="xcopy">Copiar código</button><button class="btn" type="button" id="xfile" hidden>Baixar arquivo</button></div>
+   <textarea id="xout" readonly rows="2" aria-label="Código pra exportar" style="margin-top:8px"></textarea></div>
+  <div><h2>2. No outro aparelho: importar</h2><p class="note" style="margin:0 0 8px" id="xhint">Abra o link que você mandou, ou cole o código aqui embaixo, ou escolha o arquivo. Substitui os dados deste aparelho (dá pra desfazer).</p>
+   <textarea id="xin" rows="3" placeholder="Cole o código aqui (começa com VNA1:)" aria-label="Código pra importar" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea>
+   <div class="ib"><button class="btn pri" type="button" id="ximp">Importar</button><label class="btn" style="display:inline-flex;align-items:center;margin:0;color:var(--ink);font-size:14px">Abrir arquivo<input type="file" id="xf" accept=".json,.txt,application/json,text/plain" hidden></label><button class="btn" type="button" id="xclose">Fechar</button></div>
+   <p class="note" id="xerr" style="color:var(--coral)"></p></div>
  </div>
  <div class="lay glass" id="lay" hidden></div>
  <main class="board" id="board">
@@ -648,13 +651,29 @@ $('#lay').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)
 $('#lay').addEventListener('change',e=>{if(e.target.id==='lw'){S.layout.width=e.target.value;applyLayout();save()}});
 let rz=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(applyLayout,120)});
 const enc=o=>'VNA1:'+btoa(unescape(encodeURIComponent(JSON.stringify(o))));
-const dec=t=>{t=t.trim();if(t.startsWith('{'))return JSON.parse(t);return JSON.parse(decodeURIComponent(escape(atob(t.replace(/^VNA1:/,'').replace(/\s+/g,'')))))};
-$('#xbtn').onclick=()=>{const x=$('#xp');x.hidden=!x.hidden;if(!x.hidden){$('#xout').value=enc(S);$('#xin').value='';scrollTo({top:0,behavior:'smooth'})}};
+const dec=raw=>{let t=String(raw||'').trim();if(!t)throw new Error('vazio');
+ const j=t.indexOf('{');if(j>=0&&t.lastIndexOf('}')>j&&!/VNA1/.test(t))return JSON.parse(t.slice(j,t.lastIndexOf('}')+1));
+ const k=t.search(/VNA1[:%]/);if(k>=0)t=t.slice(k).replace(/^VNA1(:|%3A)/i,'');else{const h=t.indexOf('import=');if(h>=0)t=t.slice(h+7)}
+ try{t=decodeURIComponent(t)}catch(e){}
+ t=t.replace(/[^A-Za-z0-9+/=_-]/g,'').replace(/-/g,'+').replace(/_/g,'/').replace(/=+$/,'');while(t.length%4)t+='=';
+ return JSON.parse(decodeURIComponent(escape(atob(t))))};
+const onGh=!/claude|anthropic/i.test(location.hostname)&&/^https?:$/.test(location.protocol);
+if(onGh){$('#xlink').hidden=false;$('#xfile').hidden=false}
+const xerr=m=>{$('#xerr').textContent=m||''};
+function doImport(text){let d;xerr('');
+ try{d=dec(text)}catch(e){xerr(/vazio/.test(e.message)?'Cole o código primeiro.':'Não consegui ler o código. Ele precisa estar inteiro, começando com VNA1: — tente mandar o link ou o arquivo.');return}
+ if(!d||!Array.isArray(d.items)){xerr('Esse código não é do Verão no Azul.');return}
+ try{snapUndo();S=fix(d);fillControls();renderItems();renderCalc();save();$('#xp').hidden=true;toast(`Importado: ${S.items.length} itens`,true)}
+ catch(e){xerr('Deu erro ao aplicar os dados: '+e.message)}}
+$('#xbtn').onclick=()=>{const x=$('#xp');x.hidden=!x.hidden;xerr('');if(!x.hidden){$('#xout').value=enc(S);scrollTo({top:0,behavior:'smooth'})}};
 $('#xclose').onclick=()=>{$('#xp').hidden=true};
-$('#xcopy').onclick=()=>{const ta=$('#xout');ta.value=enc(S);const ok=()=>toast('Código copiado',false),fb=()=>{ta.focus();ta.select();try{document.execCommand('copy');ok()}catch(e){toast('Selecione e copie o código manualmente',false)}};try{navigator.clipboard.writeText(ta.value).then(ok,fb)}catch(e){fb()}};
-$('#ximp').onclick=()=>{let d;try{d=dec($('#xin').value)}catch(e){return toast('Código inválido. Confira se colou ele inteiro.',false)}
- if(!d||!Array.isArray(d.items))return toast('Código inválido. Confira se colou ele inteiro.',false);
- snapUndo();S=fix(d);fillControls();renderItems();renderCalc();$('#xp').hidden=true;toast(`Importado: ${S.items.length} itens`,true)};
+const copyTxt=(txt,msg)=>{const ta=$('#xout'),ok=()=>toast(msg,false),fb=()=>{const v=ta.value;ta.value=txt;ta.focus();ta.select();try{document.execCommand('copy');ok()}catch(e){toast('Selecione e copie manualmente',false)}ta.value=v};try{navigator.clipboard.writeText(txt).then(ok,fb)}catch(e){fb()}};
+$('#xcopy').onclick=()=>{const c=enc(S);$('#xout').value=c;copyTxt(c,'Código copiado')};
+$('#xlink').onclick=()=>{const c=enc(S).slice(5).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');copyTxt(location.origin+location.pathname+'#import='+c,'Link copiado. Abra ele no celular.')};
+$('#xfile').onclick=()=>{try{const u=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='verao-no-azul.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000)}catch(e){toast('Não deu pra baixar aqui',false)}};
+$('#xf').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{$('#xin').value=String(rd.result).slice(0,200)+(String(rd.result).length>200?'…':'');doImport(rd.result)};rd.readAsText(f);e.target.value=''});
+$('#ximp').onclick=()=>doImport($('#xin').value);
+if(/^#import=/.test(location.hash)){const c=location.hash.slice(8);$('#xp').hidden=false;$('#xin').value='VNA1:'+c;$('#xhint').textContent='Encontrei dados no link que você abriu. Toque em Importar pra trazer pra cá.';$('#xout').value=enc(S);try{history.replaceState(null,'',location.pathname)}catch(e){}}
 const _fc=fillControls;fillControls=function(){_fc();applySkin();applyLayout()};
 fillControls();renderItems();renderCalc();
 }
