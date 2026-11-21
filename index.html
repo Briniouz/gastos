@@ -24,13 +24,13 @@
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 html,body{margin:0}
-body{background:var(--base);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+body{background:var(--base);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif;overflow-x:clip}
 body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(60vw 50vw at 8% 0%,var(--b1),transparent 62%),radial-gradient(50vw 46vw at 96% 6%,var(--b2),transparent 62%),radial-gradient(70vw 60vw at 82% 100%,var(--b3),transparent 62%),radial-gradient(60vw 50vw at 0% 92%,var(--b4),transparent 62%),var(--base)}
 h1,h2,.fig-n,.big{font-family:Outfit,Inter,sans-serif;letter-spacing:-.02em;line-height:1.05}
-h1{font-size:clamp(32px,5vw,46px);margin:0;text-wrap:balance}
-h2{font-size:24px;margin:0 0 4px}
+h1{font-size:clamp(26px,3vw,36px);margin:0;text-wrap:balance}
+h2{font-size:19px;margin:0 0 6px}
 p{margin:0}
-.wrap{max-width:1640px;margin:0 auto;padding:0 max(4vw,16px)}
+.wrap{max-width:var(--maxw,1440px);margin:0 auto;padding:0 max(4vw,16px)}
 .top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;justify-content:space-between;padding:28px 0 18px}
 .sub{color:var(--mute);margin-top:6px}
 .row{display:grid;gap:18px;margin-bottom:18px}
@@ -51,16 +51,24 @@ p{margin:0}
 :root[data-skin=tropical]{--b1:light-dark(#fde047,#3f6212);--b2:light-dark(#f9a8d4,#831843);--b3:light-dark(#6ee7b7,#065f46);--b4:light-dark(#fef3c7,#1c1917);--base:light-dark(#fff6e0,#0c0a09);--sun:#db2777}
 :root[data-skin=uva]{--b1:light-dark(#c4b5fd,#4c1d95);--b2:light-dark(#f0abfc,#701a75);--b3:light-dark(#93c5fd,#1e3a8a);--b4:light-dark(#ede9fe,#1e1033);--base:light-dark(#f1ecfd,#0d0718);--sun:#9333ea}
 :root[data-skin=grafite]{--b1:light-dark(#e5e7eb,#1f2937);--b2:light-dark(#d1d5db,#18181b);--b3:light-dark(#cbd5e1,#1e293b);--b4:light-dark(#f3f4f6,#111113);--base:light-dark(#eceef1,#09090b);--sun:#2563eb}
-.glass{position:relative;background:var(--glass);-webkit-backdrop-filter:blur(22px) saturate(170%);backdrop-filter:blur(22px) saturate(170%);border:1px solid var(--edge);border-radius:28px;box-shadow:inset 0 1px 0 var(--hi),0 14px 34px -16px var(--shadow);padding:clamp(18px,2.4vw,28px)}
+.glass{position:relative;background:var(--glass);-webkit-backdrop-filter:blur(22px) saturate(170%);backdrop-filter:blur(22px) saturate(170%);border:1px solid var(--edge);border-radius:28px;box-shadow:inset 0 1px 0 var(--hi),0 14px 34px -16px var(--shadow);padding:clamp(16px,1.6vw,22px)}
 .glass::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(160deg,var(--sheen),transparent 38%)}
 .glass>*{position:relative;z-index:1}
-.big{font-size:clamp(44px,7vw,76px);font-weight:700;white-space:nowrap}
-.lbl{color:var(--mute);font-size:15px}
-.status{display:inline-block;margin-top:12px;padding:8px 14px;border-radius:16px;font-weight:500;background:var(--glass2);border:1px solid var(--edge)}
+.panel{container-type:inline-size}
+.board{display:grid;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));gap:16px;grid-auto-flow:row dense;margin-bottom:18px}
+.panel[hidden]{display:none}
+.pt{display:none;flex-wrap:wrap;gap:6px;align-items:center;margin:-4px 0 12px;padding:6px 8px;border-radius:14px;border:1px dashed var(--sun);font-size:13px}
+.pt b{flex:1;min-width:6em}.pt button,.lay button,.lay select{min-height:30px;padding:2px 10px;border-radius:10px;border:1px solid var(--edge);background:var(--glass2);cursor:pointer;font-size:13px;color:var(--ink)}
+body.editing .pt{display:flex}body.editing .panel{outline:2px dashed color-mix(in srgb,var(--sun) 55%,transparent);outline-offset:3px}
+.lay{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:16px;font-size:14px;padding:12px 16px}.lay[hidden]{display:none}.lay .grp{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.lay button[aria-pressed=true]{background:var(--sun);color:#fff}
+@container (max-width:430px){.pie{grid-template-columns:minmax(0,1fr)}.pw{margin:0 auto}.add{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.add input:first-child{grid-column:1/-1}}
+.big{font-size:clamp(34px,3.6vw,50px);font-weight:700;white-space:nowrap}
+.lbl{color:var(--mute);font-size:13px}
+.status{display:inline-block;margin-top:10px;padding:6px 12px;font-size:14px;border-radius:16px;font-weight:500;background:var(--glass2);border:1px solid var(--edge)}
 .status.ok{color:var(--ok)}.status.bad{color:var(--coral)}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(7.2em,1fr));gap:10px;margin:18px 0 12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(8.5em,1fr));gap:10px;margin:18px 0 12px}
 .kpi{background:var(--glass2);border:1px solid var(--edge);border-radius:18px;padding:10px 14px}
-.kpi b{display:block;font:600 22px/1.2 Outfit,sans-serif;white-space:nowrap}
+.kpi b{display:block;font:600 17px/1.2 Outfit,sans-serif;white-space:nowrap}
 .kpi span{font-size:13px;color:var(--mute)}
 .leg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--mute);margin-bottom:6px}
 .leg i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:6px;vertical-align:-1px}
@@ -85,23 +93,23 @@ svg text{font:13px Inter,sans-serif;fill:var(--mute);paint-order:stroke;stroke:v
 svg .strong{fill:var(--ink);font-weight:600;font-size:14px}
 .gl{stroke:var(--edge);stroke-width:1}
 #tip{position:absolute;pointer-events:none;background:var(--glass2);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid var(--edge);border-radius:12px;padding:6px 10px;font-size:13px;white-space:nowrap;opacity:0;transition:opacity .15s}
-label{display:block;font-size:14px;color:var(--mute);margin-bottom:4px}
+label{display:block;font-size:13px;color:var(--mute);margin-bottom:4px}
 input,select,button{font:inherit;font-size:16px;color:var(--ink)}
-input[type=number],input[type=text],input[type=date],select{width:100%;min-height:44px;padding:8px 12px;border-radius:14px;border:1px solid var(--edge);background:var(--glass2);outline:none}
+input[type=number],input[type=text],input[type=date],select{width:100%;min-height:38px;font-size:15px;padding:6px 10px;border-radius:14px;border:1px solid var(--edge);background:var(--glass2);outline:none}
 input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--sea);outline-offset:2px}
 .f2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px}
-.btn{min-height:44px;padding:8px 18px;border-radius:999px;border:1px solid var(--edge);background:var(--glass2);cursor:pointer;font-weight:500;box-shadow:inset 0 1px 0 var(--hi)}
+.btn{min-height:38px;padding:6px 14px;font-size:14px;border-radius:999px;border:1px solid var(--edge);background:var(--glass2);cursor:pointer;font-weight:500;box-shadow:inset 0 1px 0 var(--hi)}
 .btn:hover{background:var(--glass)}
 .btn.pri{background:var(--sun);color:#fff;border-color:rgba(255,255,255,.5)}
 .days{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.days button{width:46px;height:44px;border-radius:14px;border:1px solid var(--edge);background:var(--glass2);cursor:pointer;font-weight:600;font-size:14px}
+.days button{width:38px;height:36px;border-radius:14px;border:1px solid var(--edge);background:var(--glass2);cursor:pointer;font-weight:600;font-size:14px}
 .days button[aria-pressed=true]{background:var(--sun);color:#fff}
 .chk{display:flex;gap:10px;align-items:center;font-size:15px;color:var(--ink);margin:8px 0;min-height:32px;cursor:pointer}
 .chk input{width:20px;height:20px;accent-color:var(--sun)}
 .note{font-size:13px;color:var(--mute);margin-top:8px}
 .calc{background:var(--glass2);border:1px solid var(--edge);border-radius:16px;padding:10px 14px;font-size:15px;margin-top:6px}
 .calc b{white-space:nowrap}
-table{width:100%;border-collapse:collapse;font-size:15px}
+table{width:100%;border-collapse:collapse;font-size:13px}
 th{text-align:left;font-weight:500;color:var(--mute);font-size:13px;padding:8px 6px;border-bottom:1px solid var(--edge)}
 td{padding:6px;border-bottom:1px solid var(--edge);vertical-align:middle}
 .num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
@@ -144,7 +152,9 @@ td{padding:6px;border-bottom:1px solid var(--edge);vertical-align:middle}
 .bar{display:grid;grid-template-columns:8.5em minmax(0,1fr) 5.5em;gap:10px;align-items:center;font-size:14px}
 .track{height:14px;border-radius:8px;background:var(--glass2);border:1px solid var(--edge);overflow:hidden}
 .track i{display:block;height:100%;border-radius:8px;transition:width .4s}
-.prio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.prio{display:grid;grid-template-columns:repeat(auto-fit,minmax(7.5em,1fr));gap:8px;margin-top:8px}
+.kpi .d{display:block;margin-top:2px;color:var(--ink);font-weight:600}
+.pdl{display:grid;gap:4px;margin-top:10px;font-size:13px}.pdl div{display:flex;justify-content:space-between;gap:8px;padding:6px 10px;border-radius:12px;background:var(--glass2)}.pdl b{white-space:nowrap}
 .tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px;margin-top:12px}
 .tip{background:var(--glass2);border:1px solid var(--edge);border-radius:20px;padding:14px 16px}
 .tip h3{margin:0 0 4px;font:600 17px/1.25 Outfit,sans-serif}
@@ -184,20 +194,28 @@ body{padding-bottom:96px}
 <div class="wrap">
  <header class="top">
   <div><h1>Verão no Azul</h1><p class="sub">Gastos do verão, dias de trabalho e poupança num lugar só.</p></div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><div class="skins" id="skins" role="group" aria-label="Tema"></div><button class="btn" id="copy">Copiar resumo</button><button class="btn" id="reset">Restaurar exemplo</button></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><div class="skins" id="skins" role="group" aria-label="Tema"></div><button class="btn" id="org">Organizar painéis</button><button class="btn" id="copy">Copiar resumo</button><button class="btn" id="reset">Restaurar exemplo</button></div>
  </header>
 
- <section class="row ga">
-  <div class="glass" id="hero">
-   <div class="lbl" id="bigl">você teria até a data limite</div>
-   <div class="big" id="big">R$ 0</div>
-   <div class="status" id="status">…</div>
-   <div class="kpis" id="kpis"></div>
-   <div class="leg"><span><i style="background:var(--sun)"></i>Trabalho</span><span><i style="background:var(--sea)"></i>Poupança</span><span><i style="border:2px dashed var(--ink);background:none"></i>Meta</span></div>
-   <div class="fig" id="fig"><svg id="ch" role="img" aria-label="Dinheiro acumulado por dia até a data limite"></svg><div id="tip"></div></div>
+ <div class="lay glass" id="lay" hidden></div>
+ <main class="board" id="board">
+  <div class="glass panel" data-p="gastos">
+   <h2>O que eu quero gastar no verão</h2>
+   <p class="note" style="margin:0 0 10px">Clique no nome ou no valor pra editar; clique na prioridade pra trocar.</p>
+   <div class="list" id="items"></div>
+   <form class="add" id="addf">
+    <input type="text" id="an" placeholder="Novo item (ex.: óculos de sol)" aria-label="Nome do item" required>
+    <input type="number" id="av" placeholder="R$" min="0" step="1" aria-label="Valor" inputmode="decimal" required>
+    <select id="ac" aria-label="Categoria"></select>
+    <select id="ap" aria-label="Prioridade"><option value="e">Essencial</option><option value="q" selected>Quero</option><option value="t">Talvez</option></select>
+    <button class="btn pri" type="submit">Adicionar</button>
+   </form>
+   <div class="nc" id="nc" hidden><input id="ncn" placeholder="Nome da nova categoria" maxlength="24" aria-label="Nome da nova categoria"><button class="btn pri" type="button" id="ncok">Criar</button><button class="btn" type="button" id="ncx">Cancelar</button></div>
+   <div class="cl" id="cl"></div>
+   <label class="chk"><input type="checkbox" id="colchao"> Somar 10% de colchão pra imprevistos</label>
+   <div class="tot"><span>Total planejado</span><span id="tot"></span></div>
   </div>
-
-  <div class="glass">
+  <div class="glass panel" data-p="trab">
    <h2>Trabalho</h2>
    <label for="preset" style="margin-top:10px">Tipo de trabalho</label>
    <select id="preset" style="margin-bottom:12px"></select>
@@ -214,38 +232,21 @@ body{padding-bottom:96px}
    <label class="chk"><input type="checkbox" id="feriados"> Folgar no Natal e no Ano Novo</label>
    <div class="calc" id="calc"></div>
   </div>
-
-  <div class="glass">
-   <h2>Resumo dos gastos</h2>
-   <div class="sum2" id="sum2"></div>
-   <div class="pie"><div class="pw"><svg viewBox="0 0 200 200" id="donut" role="img" aria-label="Gastos por categoria"></svg><div class="pc" id="pc"></div></div><div class="lg" id="lg"></div></div>
-   <h2 style="font-size:18px;margin-top:16px">Por prioridade</h2>
-   <div class="prio" id="prio" style="margin-top:8px"></div>
+  <div class="glass panel" data-p="res">
+   <h2>Resultado</h2>
+   <div class="lbl" id="bigl">você teria até a data limite</div>
+   <div class="big" id="big">R$ 0</div>
+   <div class="status" id="status">…</div>
+   <div class="kpis" id="kpis"></div>
   </div>
- </section>
-
- <section class="row gb">
-  <div class="glass">
-   <h2>O que eu quero gastar no verão</h2>
-   <p class="note" style="margin:0 0 10px">Clique no nome ou no valor pra editar; clique na prioridade pra trocar.</p>
-   <div class="list" id="items"></div>
-   <form class="add" id="addf">
-    <input type="text" id="an" placeholder="Novo item (ex.: óculos de sol)" aria-label="Nome do item" required>
-    <input type="number" id="av" placeholder="R$" min="0" step="1" aria-label="Valor" inputmode="decimal" required>
-    <select id="ac" aria-label="Categoria"></select>
-    <select id="ap" aria-label="Prioridade"><option value="e">Essencial</option><option value="q" selected>Quero</option><option value="t">Talvez</option></select>
-    <button class="btn pri" type="submit">Adicionar</button>
-   </form>
-   <div class="nc" id="nc" hidden><input id="ncn" placeholder="Nome da nova categoria" maxlength="24" aria-label="Nome da nova categoria"><button class="btn pri" type="button" id="ncok">Criar</button><button class="btn" type="button" id="ncx">Cancelar</button></div>
-   <div class="cl" id="cl"></div>
-   <label class="chk"><input type="checkbox" id="colchao"> Somar 10% de colchão pra imprevistos</label>
-   <div class="tot"><span>Total planejado</span><span id="tot"></span></div>
-  </div>
-  <div class="glass">
-   <h2>Cada item em dias de trabalho</h2>
+  <div class="glass panel" data-p="prio">
+   <h2>Prioridades em dias de trabalho</h2>
+   <div class="prio" id="prio"></div>
+   <div class="pdl" id="pdl"></div>
+   <h2 style="font-size:16px;margin-top:16px">Cada item em dias de trabalho</h2>
    <div class="wd" id="wd"></div>
   </div>
-  <div class="glass">
+  <div class="glass panel" data-p="ideias">
    <h2 id="ih">Com o que sobrar…</h2>
    <p class="note" style="margin:0" id="isub">Ideias com base nos seus gastos. Mudam sozinhas quando você mexe nos valores.</p>
    <div class="ib"><button class="btn pri" type="button" id="ishow">Ver o que dá pra fazer</button><button class="btn" type="button" id="iai" hidden>Pedir ideias pro Claude</button><button class="btn" type="button" id="igem">Pedir ideias pra IA (Gemini)</button><button class="btn" type="button" id="igk" title="Configurar chave do Gemini" aria-label="Configurar chave do Gemini">Chave</button></div>
@@ -257,10 +258,7 @@ body{padding-bottom:96px}
    <div class="ideas" id="ideas"></div>
    <div class="ideas" id="aiideas"></div>
   </div>
- </section>
-
- <section class="row gc">
-  <div class="glass">
+  <div class="glass panel" data-p="poup">
    <h2>Poupança</h2>
    <div class="f2" style="margin-top:12px">
     <div><label for="saldo">Já tenho guardado (R$)</label><input type="number" id="saldo" min="0" step="50" inputmode="decimal"></div>
@@ -272,25 +270,33 @@ body{padding-bottom:96px}
    <div class="calc" id="savc"></div>
    <p class="note">Taxas aproximadas de nov/2026: CDB 100% CDI ≈ 0,83% ao mês já descontando 22,5% de IR; poupança 0,5% ao mês + TR.</p>
   </div>
-  <div class="glass">
+  <div class="glass panel" data-p="graf">
+   <h2>Dinheiro dia a dia</h2>
+   <div class="leg"><span><i style="background:var(--sun)"></i>Trabalho</span><span><i style="background:var(--sea)"></i>Poupança</span><span><i style="border:2px dashed var(--ink);background:none"></i>Meta</span></div>
+   <div class="fig" id="fig"><svg id="ch" role="img" aria-label="Dinheiro acumulado por dia até a data limite"></svg><div id="tip"></div></div>
+  </div>
+  <div class="glass panel" data-p="pizza">
+   <h2>Pizza dos gastos</h2>
+   <div class="pie"><div class="pw"><svg viewBox="0 0 200 200" id="donut" role="img" aria-label="Gastos por categoria"></svg><div class="pc" id="pc"></div></div><div class="lg" id="lg"></div></div>
+  </div>
+  <div class="glass panel" data-p="meses">
    <h2>Mês a mês</h2>
    <p class="note" style="margin:0 0 10px">Depósito da poupança todo dia 5.</p>
    <div class="scroll"><table id="months"><thead><tr><th>Mês</th><th class="num">Dias</th><th class="num">Trabalho</th><th class="num">Guardado</th><th class="num">Rendeu</th><th class="num">Saldo</th></tr></thead><tbody></tbody></table></div>
    <h2 style="font-size:19px;margin-top:18px">Se você continuar guardando</h2>
    <div class="scroll"><table id="proj"><thead><tr><th>Prazo</th><th class="num">Em casa</th><th class="num">Poupança</th><th class="num">CDB 100% CDI</th></tr></thead><tbody></tbody></table></div>
   </div>
-  <div class="glass">
+  <div class="glass panel" data-p="cen">
    <h2>E se eu trabalhar mais ou menos dias?</h2>
    <p class="note" style="margin:0 0 10px">Mesmos valores e mesma data limite.</p>
    <div class="scroll"><table class="stack" id="scen"><thead><tr><th>Ritmo</th><th class="num">Dias</th><th class="num">Ganho</th><th class="num">Total</th><th class="num">Meta em</th></tr></thead><tbody></tbody></table></div>
   </div>
- </section>
-
- <section class="glass" style="margin-bottom:18px">
-  <h2>Recomendações</h2>
+  <div class="glass panel" data-p="recs">
+   <h2>Recomendações</h2>
   <p class="note" style="margin:0">Calculadas com os seus números e com dados públicos de 2026.</p>
   <div class="tips" id="tips"></div>
- </section>
+  </div>
+ </main>
 
  <footer class="src">
   <p id="saved">Salvo neste navegador.</p>
@@ -417,6 +423,7 @@ function renderCalc(){
  const se=$('#status');se.textContent=st;se.className='status '+(ok?'ok':'bad');
  $('#kpis').innerHTML=[
   [brl(meta),'gastos'+(S.colchao?' (+10%)':'')],
+  [`<em style="font-style:normal;color:${last.tot>=meta?'var(--ok)':'var(--coral)'}">${last.tot>=meta?'':'−'}${brl(Math.abs(last.tot-meta))}</em>`,last.tot>=meta?'sobra':'falta'],
   [meta>0&&r.cross>=0?`${r.need} de ${r.wdIn}`:`— de ${r.wdIn}`,'dias necessários'],
   [brl(r.per),'líquido/dia'],
   [brl(sal),'salário/mês']].map(([b,s])=>`<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join('');
@@ -427,9 +434,11 @@ function renderCalc(){
  {const C=2*Math.PI*70;let acc=0;$('#donut').innerHTML=`<circle cx="100" cy="100" r="70" fill="none" stroke="var(--glass2)" stroke-width="30"/>`+cs.map(x=>{const L=x.v/(tot||1)*C,g=cs.length>1?2:0,c=`<circle cx="100" cy="100" r="70" fill="none" stroke="${x.col}" stroke-width="30" stroke-dasharray="${Math.max(0,L-g)} ${C}" stroke-dashoffset="${-acc}"><title>${x.c}: ${brl(x.v)}</title></circle>`;acc+=L;return c}).join('');
  $('#pc').innerHTML=`<span>total</span><b>${brl(tot)}</b><span>${S.items.length} itens</span>`;
  $('#lg').innerHTML=cs.map(x=>`<div><i style="background:${x.col}"></i><span>${x.c}</span><b class="num">${brl(x.v)}</b><em>${Math.round(x.v/(tot||1)*100)}%</em></div>`).join('')||'<p class="note">Sem gastos ainda.</p>';
- const sob=last.tot-meta;$('#sum2').innerHTML=`<div class="kpi"><b>${brl(meta)}</b><span>todos os gastos${S.colchao?' (+10%)':''}</span></div><div class="kpi"><b style="color:${sob>=0?'var(--ok)':'var(--coral)'}">${sob>=0?brl(sob):'−'+brl(-sob)}</b><span>${sob>=0?'sobra na data limite':'falta na data limite'}</span></div>`;
+ const sob=last.tot-meta;
  $('#bars').textContent=sob>=0?brl(sob):'−'+brl(-sob);$('#bars').style.color=sob>=0?'var(--ok)':'var(--coral)';renderIdeas(r)}
- $('#prio').innerHTML=Object.entries(PRIO).map(([k,v])=>{const s=S.items.filter(x=>x.prio===k).reduce((a,b)=>a+(+b.valor||0),0);return`<div class="kpi"><b>${brl(s)}</b><span>${v}</span></div>`}).join('');
+ $('#prio').innerHTML=Object.entries(PRIO).map(([k,v])=>{const s=S.items.filter(x=>x.prio===k).reduce((a,b)=>a+(+b.valor||0),0);return`<div class="kpi"><b>${brl(s)}</b><span>${v}</span><span class="d">${r.per>0?Math.ceil(s/r.per)+' dias':'—'}</span></div>`}).join('');
+ {const sp=k=>S.items.filter(x=>k.includes(x.prio)).reduce((a,b)=>a+(+b.valor||0),0),dd=v=>r.per>0?Math.ceil(v/r.per)+' dias':'—';
+  $('#pdl').innerHTML=[['Só o essencial','e'],['Essencial + Quero','eq'],['Tudo (com Talvez)','eqt']].map(([n,k])=>`<div><span>${n}</span><b>${brl(sp(k))} · ${dd(sp(k))}</b></div>`).join('')+`<p class="note" style="margin:2px 0 0">Você tem ${r.wdIn} dias de trabalho no período, a ${brl(r.per)} por dia.</p>`}
  renderMonths(r);renderScen(r);renderTips(r,sal);renderProj();
  {const f=n=>n.toLocaleString('pt-BR',{maximumFractionDigits:1});
  if(r.per>0){const tot=sumItems(),dt=tot/r.per,dm=r.meta/r.per;
@@ -608,7 +617,29 @@ function applySkin(){if(!S.skin)S.skin='sol';if(!S.mode)S.mode='auto';rootEl.dat
  $('#mode').value=S.mode}
 $('#skins').addEventListener('click',e=>{const b=e.target.closest('[data-sk]');if(!b)return;S.skin=b.dataset.sk;applySkin();draw();save()});
 $('#skins').addEventListener('change',e=>{if(e.target.id!=='mode')return;S.mode=e.target.value;applySkin();draw();save()});
-const _fc=fillControls;fillControls=function(){_fc();applySkin()};
+const PANELS=[['gastos','Gastos',2],['trab','Trabalho',1],['res','Resultado',1],['prio','Prioridades',1],['ideias','Ideias pra sobra',1],['poup','Poupança',1],['graf','Gráfico',2],['pizza','Pizza',1],['meses','Mês a mês',1],['cen','Cenários',1],['recs','Recomendações',3]];
+const PN2=Object.fromEntries(PANELS.map(p=>[p[0],p[1]]));
+const defLayout=()=>({order:PANELS.map(p=>p[0]),hidden:[],w:Object.fromEntries(PANELS.map(p=>[p[0],p[2]])),cols:3,width:'normal'});
+function fixLayout(){const d=defLayout(),L=S.layout&&Array.isArray(S.layout.order)?S.layout:d;L.order=L.order.filter(k=>PN2[k]);for(const k of d.order)if(!L.order.includes(k))L.order.push(k);L.hidden=(L.hidden||[]).filter(k=>PN2[k]);L.w={...d.w,...(L.w||{})};L.cols=L.cols||3;L.width=L.width||'normal';S.layout=L}
+const board=$('#board'),panels=Object.fromEntries([...board.children].map(e=>[e.dataset.p,e]));
+for(const[k,e]of Object.entries(panels))e.insertAdjacentHTML('afterbegin',`<div class="pt"><b>${PN2[k]}</b><button type="button" data-mv="-1" aria-label="Mover pra trás">◀ Antes</button><button type="button" data-mv="1" aria-label="Mover pra frente">Depois ▶</button><button type="button" data-wd></button><button type="button" data-hd>Esconder</button></div>`);
+let editing=false;
+function applyLayout(){fixLayout();const L=S.layout,W=innerWidth,ec=Math.min(L.cols,W<820?1:W<1150?2:3);
+ board.style.setProperty('--cols',ec);document.documentElement.style.setProperty('--maxw',{compacta:'1180px',normal:'1440px',cheia:'100%'}[L.width]||'1440px');
+ L.order.forEach(k=>{const e=panels[k];board.appendChild(e);e.hidden=L.hidden.includes(k);e.style.gridColumn=`span ${Math.min(L.w[k]||1,ec)}`;e.querySelector('[data-wd]').textContent=`Largura ${L.w[k]}`});
+ const lay=$('#lay');lay.hidden=!editing;document.body.classList.toggle('editing',editing);$('#org').textContent=editing?'Concluir':'Organizar painéis';
+ if(editing)lay.innerHTML=`<b>Organizar painéis</b><div class="grp">Colunas ${[1,2,3].map(n=>`<button type="button" data-cols="${n}" aria-pressed="${L.cols===n}">${n}</button>`).join('')}</div><div class="grp">Largura da página <select id="lw">${[['compacta','Compacta'],['normal','Normal'],['cheia','Tela toda']].map(([v,n])=>`<option value="${v}"${L.width===v?' selected':''}>${n}</option>`).join('')}</select></div><div class="grp">${L.hidden.length?'Escondidos: '+L.hidden.map(k=>`<button type="button" data-show="${k}">+ ${PN2[k]}</button>`).join(''):'<span class="note" style="margin:0">Use os botões em cada painel pra mover, mudar a largura ou esconder.</span>'}</div><div class="grp"><button type="button" id="ldef">Voltar ao padrão</button><button type="button" id="ldone" style="background:var(--sun);color:#fff">Concluir</button></div>`;
+}
+$('#org').onclick=()=>{editing=!editing;applyLayout();if(editing)scrollTo({top:0,behavior:'smooth'})};
+board.addEventListener('click',e=>{const b=e.target.closest('.pt button');if(!b)return;const k=b.closest('.panel').dataset.p,L=S.layout,i=L.order.indexOf(k);
+ if(b.dataset.mv){const vis=L.order.filter(x=>!L.hidden.includes(x)),vi=vis.indexOf(k),t=vis[vi+ +b.dataset.mv];if(!t)return;const ti=L.order.indexOf(t);L.order.splice(i,1);L.order.splice(ti,0,k)}
+ else if(b.hasAttribute('data-wd'))L.w[k]=L.w[k]%3+1;else if(b.hasAttribute('data-hd'))L.hidden.push(k);
+ applyLayout();save()});
+$('#lay').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const L=S.layout;
+ if(b.dataset.cols)L.cols=+b.dataset.cols;else if(b.dataset.show)L.hidden=L.hidden.filter(x=>x!==b.dataset.show);else if(b.id==='ldef'){S.layout=defLayout()}else if(b.id==='ldone')editing=false;applyLayout();save()});
+$('#lay').addEventListener('change',e=>{if(e.target.id==='lw'){S.layout.width=e.target.value;applyLayout();save()}});
+let rz=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(applyLayout,120)});
+const _fc=fillControls;fillControls=function(){_fc();applySkin();applyLayout()};
 fillControls();renderItems();renderCalc();
 }
 </script>
