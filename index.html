@@ -38,6 +38,16 @@ p{margin:0}
 .r2{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
 .r3{grid-template-columns:minmax(0,1.75fr) minmax(0,1fr)}
 .wd{display:grid;gap:6px;margin-top:10px}.wd div{display:flex;justify-content:space-between;gap:10px;font-size:15px;padding:6px 0;border-bottom:1px solid var(--edge)}.wd b{white-space:nowrap}
+.wd .wdt{border:0;margin-top:6px;padding:12px 14px;border-radius:16px;background:color-mix(in srgb,var(--sun) 16%,transparent);font-weight:600;align-items:center}
+.wdt b{font:700 22px/1 Outfit,sans-serif}.wdt small{display:block;font-weight:400;font-size:13px;color:var(--mute)}
+.skins{display:flex;gap:6px;align-items:center;flex-wrap:nowrap;padding:5px;border-radius:999px;background:var(--glass);border:1px solid var(--edge);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.skins button{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
+.skins button[aria-pressed=true]{border-color:var(--ink)}
+.skins select{min-height:32px;border-radius:999px;border:1px solid var(--edge);background:var(--glass2);padding:2px 10px;font-size:14px}
+:root[data-skin=oceano]{--b1:light-dark(#7dd3fc,#0c4a6e);--b2:light-dark(#38bdf8,#082f49);--b3:light-dark(#99f6e4,#065f5b);--b4:light-dark(#e0f2fe,#0b1e33);--base:light-dark(#dff3fb,#04121c);--sun:#0284c7}
+:root[data-skin=tropical]{--b1:light-dark(#fde047,#3f6212);--b2:light-dark(#f9a8d4,#831843);--b3:light-dark(#6ee7b7,#065f46);--b4:light-dark(#fef3c7,#1c1917);--base:light-dark(#fff6e0,#0c0a09);--sun:#db2777}
+:root[data-skin=uva]{--b1:light-dark(#c4b5fd,#4c1d95);--b2:light-dark(#f0abfc,#701a75);--b3:light-dark(#93c5fd,#1e3a8a);--b4:light-dark(#ede9fe,#1e1033);--base:light-dark(#f1ecfd,#0d0718);--sun:#9333ea}
+:root[data-skin=grafite]{--b1:light-dark(#e5e7eb,#1f2937);--b2:light-dark(#d1d5db,#18181b);--b3:light-dark(#cbd5e1,#1e293b);--b4:light-dark(#f3f4f6,#111113);--base:light-dark(#eceef1,#09090b);--sun:#2563eb}
 .glass{position:relative;background:var(--glass);-webkit-backdrop-filter:blur(22px) saturate(170%);backdrop-filter:blur(22px) saturate(170%);border:1px solid var(--edge);border-radius:28px;box-shadow:inset 0 1px 0 var(--hi),0 14px 34px -16px var(--shadow);padding:clamp(18px,2.4vw,28px)}
 .glass::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(160deg,var(--sheen),transparent 38%)}
 .glass>*{position:relative;z-index:1}
@@ -151,7 +161,7 @@ tr.cur td{font-weight:600}
 <div class="wrap">
  <header class="top">
   <div><h1>Verão no Azul</h1><p class="sub">Gastos do verão, dias de trabalho e poupança num lugar só.</p></div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="copy">Copiar resumo</button><button class="btn" id="reset">Restaurar exemplo</button></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><div class="skins" id="skins" role="group" aria-label="Tema"></div><button class="btn" id="copy">Copiar resumo</button><button class="btn" id="reset">Restaurar exemplo</button></div>
  </header>
 
  <section class="row r1">
@@ -293,7 +303,7 @@ const DEF=()=>({items:[
  {id:7,nome:'Fone sem fio',valor:250,cat:3,prio:'t'},
  {id:8,nome:'Show ou festa',valor:200,cat:2,prio:'t'}],
  job:{preset:'rest',diaria:60,entregas:12,extra:5,custo:25,ini:'2026-12-01',fim:'2027-02-28',dias:[true,false,false,true,true,true,true],feriados:true},
- save:{saldo:300,mensal:200,tipo:'cdb',taxa:0.83,usar:true},colchao:true,nid:9,cats:defCats()});
+ save:{saldo:300,mensal:200,tipo:'cdb',taxa:0.83,usar:true},colchao:true,nid:9,cats:defCats(),skin:'sol',mode:'auto'});
 const fix=d=>{const b=DEF();if(!d||!Array.isArray(d.items))return b;const o={...b,...d,job:{...b.job,...d.job},save:{...b.save,...d.save}};if(!Array.isArray(o.cats)||!o.cats.length)o.cats=defCats();o.items.forEach(x=>{if(!(+x.cat>=0&&+x.cat<o.cats.length))x.cat=o.cats.length-1});return o};
 const KEY='verao-no-azul-v1';
 let S;
@@ -382,7 +392,10 @@ function renderCalc(){
  $('#cats').innerHTML=cs.map(x=>`<div class="bar"><span>${x.c}</span><span class="track"><i style="width:${x.v/mx*100}%;background:${x.col}"></i></span><span class="num">${brl(x.v)}</span></div>`).join('')||'<p class="note">Sem gastos ainda.</p>';
  $('#prio').innerHTML=Object.entries(PRIO).map(([k,v])=>{const s=S.items.filter(x=>x.prio===k).reduce((a,b)=>a+(+b.valor||0),0);return`<div class="kpi"><b>${brl(s)}</b><span>${v}</span></div>`}).join('');
  renderMonths(r);renderScen(r);renderTips(r,sal);renderProj();
- $('#wd').innerHTML=r.per>0?[...S.items].sort((a,b)=>b.valor-a.valor).slice(0,6).map(x=>`<div><span>${esc(x.nome)}</span><b>${(x.valor/r.per).toLocaleString('pt-BR',{maximumFractionDigits:1})} dias</b></div>`).join(''):'<p class="note">Ajuste o ganho por dia pra ver.</p>';
+ {const f=n=>n.toLocaleString('pt-BR',{maximumFractionDigits:1});
+ if(r.per>0){const tot=sumItems(),dt=tot/r.per,dm=r.meta/r.per;
+  $('#wd').innerHTML=[...S.items].sort((a,b)=>b.valor-a.valor).map(x=>`<div><span>${esc(x.nome)}</span><b>${f(x.valor/r.per)} dias</b></div>`).join('')+`<div class="wdt"><span>Total pra bancar tudo${S.colchao?`<small>com o colchão de 10%: ${f(dm)} dias</small>`:''}</span><b>${Math.ceil(S.colchao?dm:dt)} dias</b></div><p class="note">Só com o trabalho, sem contar a poupança. Você tem ${r.wdIn} dias de trabalho no período${Math.ceil(S.colchao?dm:dt)<=r.wdIn?', então dá.':`, faltariam ${Math.ceil(S.colchao?dm:dt)-r.wdIn}.`}</p>`}
+ else $('#wd').innerHTML='<p class="note">Ajuste o ganho por dia pra ver.</p>'}
  $('#barv').textContent=brl(last.tot);$('#barm').textContent=brl(meta);$('#barv').style.color=ok?'var(--ok)':'var(--coral)';
  draw();save();
 }
@@ -427,7 +440,7 @@ function draw(){
  const st=nice(mx*1.08/4);mx=Math.ceil(mx*1.08/st)*st;
  const X=i=>m.l+(n>1?i/(n-1):0)*iw,Y=v=>m.t+ih-Math.max(0,Math.min(v,mx))/mx*ih;
  geo={m,iw,n,X,Y};
- let g=`<defs><linearGradient id="gw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a2a" stop-opacity=".95"/><stop offset="1" stop-color="#ffb36b" stop-opacity=".45"/></linearGradient><linearGradient id="gs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14b8d8" stop-opacity=".9"/><stop offset="1" stop-color="#7fe0f0" stop-opacity=".4"/></linearGradient></defs>`;
+ let g=`<defs><linearGradient id="gw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--sun)" stop-opacity=".95"/><stop offset="1" style="stop-color:var(--sun)" stop-opacity=".4"/></linearGradient><linearGradient id="gs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14b8d8" stop-opacity=".9"/><stop offset="1" stop-color="#7fe0f0" stop-opacity=".4"/></linearGradient></defs>`;
  for(let v=0;v<=mx+1e-6;v+=st)g+=`<line class="gl" x1="${m.l}" x2="${W-m.r}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${m.l-8}" y="${Y(v)+4}" text-anchor="end">${short(v)}</text>`;
  let ticks=R.map((o,i)=>o.d.getDate()===1?i:-1).filter(i=>i>=0);if(!ticks.length||X(ticks[0])-X(0)>40)ticks.unshift(0);if(sm)ticks=ticks.filter((_,k)=>k%2===0);
  for(const i of ticks)g+=`<text x="${X(i)}" y="${H-8}" text-anchor="${i===0?'start':'middle'}">${MES[R[i].d.getMonth()]}</text>`;
@@ -492,6 +505,15 @@ $('#reset').onclick=()=>{snapUndo();S=DEF();fillControls();renderItems();renderC
 $('#copy').onclick=()=>{const r=cur,l=r.last;const txt=`Verão no Azul\nGastos planejados: ${brl(r.meta)}\nTrabalho: ${brl2(r.per)} líquido por dia, ${r.wdIn} dias de ${fd(pd(S.job.ini))} a ${fd(r.fim)}\nTotal na data limite: ${brl(l.tot)} (trabalho ${brl(l.w)}${S.save.usar?` + poupança ${brl(l.s)}`:''})\n${$('#status').textContent}`;
  const done=()=>toast('Resumo copiado',false);try{navigator.clipboard.writeText(txt).then(done,()=>toast('Não deu pra copiar aqui',false))}catch(err){toast('Não deu pra copiar aqui',false)}};
 
+const SKINS=[['sol','Pôr do sol','linear-gradient(135deg,#ffb36b,#ff7b94)'],['oceano','Oceano','linear-gradient(135deg,#7dd3fc,#0284c7)'],['tropical','Tropical','linear-gradient(135deg,#fde047,#db2777)'],['uva','Uva','linear-gradient(135deg,#c4b5fd,#9333ea)'],['grafite','Grafite','linear-gradient(135deg,#d1d5db,#1f2937)']];
+const rootEl=document.documentElement,viewerTheme=rootEl.dataset.theme;
+function applySkin(){if(!S.skin)S.skin='sol';if(!S.mode)S.mode='auto';rootEl.dataset.skin=S.skin;
+ if(S.mode==='auto'){if(viewerTheme)rootEl.dataset.theme=viewerTheme;else delete rootEl.dataset.theme}else rootEl.dataset.theme=S.mode;
+ $('#skins').innerHTML=SKINS.map(([k,n,g])=>`<button type="button" data-sk="${k}" title="${n}" aria-label="Tema ${n}" aria-pressed="${S.skin===k}" style="background:${g}"></button>`).join('')+`<select id="mode" aria-label="Modo claro ou escuro"><option value="auto">Auto</option><option value="light">Claro</option><option value="dark">Escuro</option></select>`;
+ $('#mode').value=S.mode}
+$('#skins').addEventListener('click',e=>{const b=e.target.closest('[data-sk]');if(!b)return;S.skin=b.dataset.sk;applySkin();draw();save()});
+$('#skins').addEventListener('change',e=>{if(e.target.id!=='mode')return;S.mode=e.target.value;applySkin();draw();save()});
+const _fc=fillControls;fillControls=function(){_fc();applySkin()};
 fillControls();renderItems();renderCalc();
 }
 </script>
