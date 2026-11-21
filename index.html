@@ -30,10 +30,13 @@ h1,h2,.fig-n,.big{font-family:Outfit,Inter,sans-serif;letter-spacing:-.02em;line
 h1{font-size:clamp(32px,5vw,46px);margin:0;text-wrap:balance}
 h2{font-size:24px;margin:0 0 4px}
 p{margin:0}
-.wrap{max-width:1240px;margin:0 auto;padding:0 max(4vw,16px)}
+.wrap{max-width:1640px;margin:0 auto;padding:0 max(4vw,16px)}
 .top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;justify-content:space-between;padding:28px 0 18px}
 .sub{color:var(--mute);margin-top:6px}
 .row{display:grid;gap:18px;margin-bottom:18px}
+.ga{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr)}
+.gb{grid-template-columns:minmax(0,1.75fr) minmax(0,.9fr) minmax(0,1.15fr)}
+.gc{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) minmax(0,1.25fr)}
 .r1{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr)}
 .r2{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
 .r3{grid-template-columns:minmax(0,1.75fr) minmax(0,1fr)}
@@ -55,13 +58,26 @@ p{margin:0}
 .lbl{color:var(--mute);font-size:15px}
 .status{display:inline-block;margin-top:12px;padding:8px 14px;border-radius:16px;font-weight:500;background:var(--glass2);border:1px solid var(--edge)}
 .status.ok{color:var(--ok)}.status.bad{color:var(--coral)}
-.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:18px 0 12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(7.2em,1fr));gap:10px;margin:18px 0 12px}
 .kpi{background:var(--glass2);border:1px solid var(--edge);border-radius:18px;padding:10px 14px}
 .kpi b{display:block;font:600 22px/1.2 Outfit,sans-serif;white-space:nowrap}
 .kpi span{font-size:13px;color:var(--mute)}
 .leg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--mute);margin-bottom:6px}
 .leg i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:6px;vertical-align:-1px}
-.fig{position:relative;min-height:300px}
+.fig{position:relative;min-height:210px}
+.sum2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 14px}
+.pie{display:grid;grid-template-columns:140px minmax(0,1fr);gap:16px;align-items:center}
+.pw{position:relative;width:140px;height:140px}.pw svg{width:100%;height:100%;transform:rotate(-90deg)}
+.pw circle{transition:stroke-dasharray .4s,stroke-dashoffset .4s}
+.pc{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font-size:12px;color:var(--mute)}.pc b{font:700 20px/1.1 Outfit,sans-serif;color:var(--ink)}
+.lg{display:grid;gap:4px;font-size:13px}.lg div{display:grid;grid-template-columns:10px minmax(0,1fr) auto 3.2em;gap:8px;align-items:center}.lg i{width:10px;height:10px;border-radius:50%}.lg span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lg em{font-style:normal;color:var(--mute);text-align:right;font-size:13px}
+.ideas{display:grid;gap:10px;margin-top:12px}
+.idea{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:12px 14px;border-radius:18px;background:var(--glass2);border:1px solid var(--edge);animation:pop .35s ease both}
+.idea h3{margin:0;font:600 16px/1.25 Outfit,sans-serif}.idea p{grid-column:1/-1;font-size:14px;color:var(--mute)}
+.idea .v{font:700 16px Outfit,sans-serif;white-space:nowrap;color:var(--sun)}
+.idea.off{opacity:.5}.idea .tag{font-size:11px;font-weight:600;padding:1px 8px;border-radius:999px;background:color-mix(in srgb,var(--sun) 18%,transparent);color:var(--ink);margin-left:6px;vertical-align:2px}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ib{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .fig>svg{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y}
 svg text{font:13px Inter,sans-serif;fill:var(--mute);paint-order:stroke;stroke:var(--glass2);stroke-width:4px}
 svg .strong{fill:var(--ink);font-weight:600;font-size:14px}
@@ -103,7 +119,7 @@ td{padding:6px;border-bottom:1px solid var(--edge);vertical-align:middle}
 .it .nm{grid-area:n;font-weight:500}
 .it input[type=number]::-webkit-inner-spin-button,.add input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 .it input[type=number],.add input[type=number]{-moz-appearance:textfield}
-.chip{grid-area:c;-webkit-appearance:none;appearance:none;border:1px solid var(--edge);background:var(--glass2);border-radius:999px;padding:3px 12px;font-size:13px;min-height:28px;max-width:10.5em;cursor:pointer;color:var(--mute);text-overflow:ellipsis}
+.chip{grid-area:c;max-width:9em!important;-webkit-appearance:none;appearance:none;border:1px solid var(--edge);background:var(--glass2);border-radius:999px;padding:3px 12px;font-size:13px;min-height:28px;max-width:10.5em;cursor:pointer;color:var(--mute);text-overflow:ellipsis}
 .pr{grid-area:p;border:0;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;min-height:26px;min-width:6.2em;cursor:pointer}
 .p-e{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
 .p-q{background:rgba(255,122,26,.17);color:light-dark(#b04a00,#ffa15c)}
@@ -127,7 +143,7 @@ td{padding:6px;border-bottom:1px solid var(--edge);vertical-align:middle}
 .track{height:14px;border-radius:8px;background:var(--glass2);border:1px solid var(--edge);overflow:hidden}
 .track i{display:block;height:100%;border-radius:8px;transition:width .4s}
 .prio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px;margin-top:12px}
+.tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px;margin-top:12px}
 .tip{background:var(--glass2);border:1px solid var(--edge);border-radius:20px;padding:14px 16px}
 .tip h3{margin:0 0 4px;font:600 17px/1.25 Outfit,sans-serif}
 .tip p{font-size:15px}
@@ -138,7 +154,11 @@ tr.cur td{font-weight:600}
 .src li{margin:3px 0}
 #toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,140%);opacity:0;visibility:hidden;display:flex;gap:12px;align-items:center;padding:10px 12px 10px 18px;border-radius:999px;z-index:20;transition:transform .25s}
 #toast.on{transform:translate(-50%,0);opacity:1;visibility:visible}
-#bar{display:none}
+#bar{display:flex;position:fixed;right:20px;bottom:20px;z-index:10;gap:18px;padding:12px 20px;border-radius:22px;font-size:13px;color:var(--mute)}
+#bar b{display:block;font:700 19px/1.2 Outfit,sans-serif;white-space:nowrap;color:var(--ink)}
+body{padding-bottom:96px}
+@media(max-width:1200px){.ga,.gb,.gc{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.ga>:first-child,.gb>:first-child{grid-column:1/-1}.gc>:last-child{grid-column:1/-1}}
+@media(max-width:820px){.ga,.gb,.gc{grid-template-columns:minmax(0,1fr)}.ga>*,.gb>*,.gc>*{grid-column:auto!important}}
 @media(max-width:900px){.r1,.r2,.r3{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:600px){
  .f2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
@@ -149,8 +169,9 @@ tr.cur td{font-weight:600}
  .stack thead{display:none}.stack tr{display:grid;padding-block:8px;border-bottom:1px solid var(--edge)}.stack td{display:flex;justify-content:space-between;gap:12px;border:0;padding:3px 0}.stack td::before{content:attr(data-l);color:var(--mute)}
  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
  .bar{grid-template-columns:7em minmax(0,1fr) 5em}
- #bar{display:flex;position:fixed;left:10px;right:10px;bottom:10px;z-index:10;justify-content:space-between;gap:10px;padding:10px 16px;border-radius:20px;font-size:14px}
- #bar b{font:600 18px Outfit,sans-serif;white-space:nowrap}
+ #bar{left:10px;right:10px;bottom:10px;justify-content:space-between;gap:8px;padding:10px 14px}
+ #bar b{font-size:16px}
+ .pie{grid-template-columns:minmax(0,1fr)}.pw{margin:0 auto}
  body{padding-bottom:80px}
  #toast{bottom:84px}
 }
@@ -164,20 +185,19 @@ tr.cur td{font-weight:600}
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><div class="skins" id="skins" role="group" aria-label="Tema"></div><button class="btn" id="copy">Copiar resumo</button><button class="btn" id="reset">Restaurar exemplo</button></div>
  </header>
 
- <section class="row r1">
+ <section class="row ga">
   <div class="glass" id="hero">
    <div class="lbl" id="bigl">você teria até a data limite</div>
    <div class="big" id="big">R$ 0</div>
    <div class="status" id="status">…</div>
    <div class="kpis" id="kpis"></div>
-   <div class="leg"><span><i style="background:var(--sun)"></i>Trabalho</span><span><i style="background:var(--sea)"></i>Poupança</span><span><i style="border:2px dashed var(--ink);background:none"></i>Meta (gastos do verão)</span></div>
+   <div class="leg"><span><i style="background:var(--sun)"></i>Trabalho</span><span><i style="background:var(--sea)"></i>Poupança</span><span><i style="border:2px dashed var(--ink);background:none"></i>Meta</span></div>
    <div class="fig" id="fig"><svg id="ch" role="img" aria-label="Dinheiro acumulado por dia até a data limite"></svg><div id="tip"></div></div>
   </div>
 
   <div class="glass">
    <h2>Trabalho</h2>
-   <p class="note" style="margin:0 0 14px">Diária fixa + extra por entrega, menos o que você gasta pra trabalhar.</p>
-   <label for="preset">Tipo de trabalho</label>
+   <label for="preset" style="margin-top:10px">Tipo de trabalho</label>
    <select id="preset" style="margin-bottom:12px"></select>
    <div class="f2">
     <div><label for="diaria">Diária fixa (R$)</label><input type="number" id="diaria" min="0" step="5" inputmode="decimal"></div>
@@ -189,12 +209,20 @@ tr.cur td{font-weight:600}
    </div>
    <label>Dias que você trabalha</label>
    <div class="days" id="days"></div>
-   <label class="chk"><input type="checkbox" id="feriados"> Folgar no Natal (25/12) e no Ano Novo (01/01)</label>
+   <label class="chk"><input type="checkbox" id="feriados"> Folgar no Natal e no Ano Novo</label>
    <div class="calc" id="calc"></div>
+  </div>
+
+  <div class="glass">
+   <h2>Resumo dos gastos</h2>
+   <div class="sum2" id="sum2"></div>
+   <div class="pie"><div class="pw"><svg viewBox="0 0 200 200" id="donut" role="img" aria-label="Gastos por categoria"></svg><div class="pc" id="pc"></div></div><div class="lg" id="lg"></div></div>
+   <h2 style="font-size:18px;margin-top:16px">Por prioridade</h2>
+   <div class="prio" id="prio" style="margin-top:8px"></div>
   </div>
  </section>
 
- <section class="row r3">
+ <section class="row gb">
   <div class="glass">
    <h2>O que eu quero gastar no verão</h2>
    <p class="note" style="margin:0 0 10px">Clique no nome ou no valor pra editar; clique na prioridade pra trocar.</p>
@@ -212,24 +240,19 @@ tr.cur td{font-weight:600}
    <div class="tot"><span>Total planejado</span><span id="tot"></span></div>
   </div>
   <div class="glass">
-   <h2>Pra onde vai o dinheiro</h2>
-   <div class="bars" id="cats"></div>
-   <h2 style="font-size:19px;margin-top:6px">Por prioridade</h2>
-   <div class="prio" id="prio"></div>
-   <h2 style="font-size:19px;margin-top:20px">Cada item em dias de trabalho</h2>
+   <h2>Cada item em dias de trabalho</h2>
    <div class="wd" id="wd"></div>
+  </div>
+  <div class="glass">
+   <h2 id="ih">Com o que sobrar…</h2>
+   <p class="note" style="margin:0" id="isub">Ideias com base nos seus gastos. Mudam sozinhas quando você mexe nos valores.</p>
+   <div class="ib"><button class="btn pri" type="button" id="ishow">Ver o que dá pra fazer</button><button class="btn" type="button" id="iai" hidden>Pedir ideias pro Claude</button></div>
+   <div class="ideas" id="ideas"></div>
+   <div class="ideas" id="aiideas"></div>
   </div>
  </section>
 
- <section class="row r2">
-  <div class="glass">
-   <h2>Mês a mês</h2>
-   <p class="note" style="margin:0 0 10px">Depósito da poupança todo dia 5; rendimento calculado por dia.</p>
-   <div class="scroll"><table id="months"><thead><tr><th>Mês</th><th class="num">Dias</th><th class="num">Trabalho</th><th class="num">Guardado</th><th class="num">Rendeu</th><th class="num">Saldo</th></tr></thead><tbody></tbody></table></div>
-   <h2 style="font-size:19px;margin-top:22px">Se você continuar guardando</h2>
-   <p class="note" style="margin:0 0 8px">Saldo atual + depósito mensal, sem tirar nada. Aproximado, IR do CDB incluso.</p>
-   <div class="scroll"><table id="proj"><thead><tr><th>Prazo</th><th class="num">Em casa</th><th class="num">Poupança</th><th class="num">CDB 100% CDI</th></tr></thead><tbody></tbody></table></div>
-  </div>
+ <section class="row gc">
   <div class="glass">
    <h2>Poupança</h2>
    <div class="f2" style="margin-top:12px">
@@ -242,12 +265,18 @@ tr.cur td{font-weight:600}
    <div class="calc" id="savc"></div>
    <p class="note">Taxas aproximadas de nov/2026: CDB 100% CDI ≈ 0,83% ao mês já descontando 22,5% de IR; poupança 0,5% ao mês + TR.</p>
   </div>
- </section>
-
- <section class="glass" style="margin-bottom:18px">
-  <h2>E se eu trabalhar mais ou menos dias?</h2>
-  <p class="note" style="margin:0 0 10px">Mesmos valores, mesma data limite, ritmos diferentes.</p>
-  <div class="scroll"><table class="stack" id="scen"><thead><tr><th>Ritmo</th><th class="num">Dias no período</th><th class="num">Ganho trabalhando</th><th class="num">Total na data limite</th><th class="num">Meta batida em</th></tr></thead><tbody></tbody></table></div>
+  <div class="glass">
+   <h2>Mês a mês</h2>
+   <p class="note" style="margin:0 0 10px">Depósito da poupança todo dia 5.</p>
+   <div class="scroll"><table id="months"><thead><tr><th>Mês</th><th class="num">Dias</th><th class="num">Trabalho</th><th class="num">Guardado</th><th class="num">Rendeu</th><th class="num">Saldo</th></tr></thead><tbody></tbody></table></div>
+   <h2 style="font-size:19px;margin-top:18px">Se você continuar guardando</h2>
+   <div class="scroll"><table id="proj"><thead><tr><th>Prazo</th><th class="num">Em casa</th><th class="num">Poupança</th><th class="num">CDB 100% CDI</th></tr></thead><tbody></tbody></table></div>
+  </div>
+  <div class="glass">
+   <h2>E se eu trabalhar mais ou menos dias?</h2>
+   <p class="note" style="margin:0 0 10px">Mesmos valores e mesma data limite.</p>
+   <div class="scroll"><table class="stack" id="scen"><thead><tr><th>Ritmo</th><th class="num">Dias</th><th class="num">Ganho</th><th class="num">Total</th><th class="num">Meta em</th></tr></thead><tbody></tbody></table></div>
+  </div>
  </section>
 
  <section class="glass" style="margin-bottom:18px">
@@ -271,7 +300,7 @@ tr.cur td{font-weight:600}
  </footer>
 </div>
 
-<div id="bar" class="glass"><span>Na data limite<br><b id="barv">R$ 0</b></span><span style="text-align:right">Meta<br><b id="barm">R$ 0</b></span></div>
+<div id="bar" class="glass" aria-live="polite"><span>Gastos<b id="barm">R$ 0</b></span><span>Na data limite<b id="barv">R$ 0</b></span><span>Sobra<b id="bars">R$ 0</b></span></div>
 <div id="toast" class="glass"><span id="tmsg"></span><button class="btn" id="undo">Desfazer</button></div>
 
 <script>
@@ -380,16 +409,19 @@ function renderCalc(){
  else{ok=false;st='Com esses valores a meta não fecha nem em um ano. Revise ganho, custo ou gastos.'}
  const se=$('#status');se.textContent=st;se.className='status '+(ok?'ok':'bad');
  $('#kpis').innerHTML=[
-  [brl(meta),'gastos planejados'+(S.colchao?' (+10%)':'')],
-  [meta>0&&r.cross>=0?`${r.need} de ${r.wdIn}`:`— de ${r.wdIn}`,'dias de trabalho necessários'],
-  [brl(r.per),'líquido por dia'],
-  [brl(sal),'salário estimado por mês']].map(([b,s])=>`<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join('');
+  [brl(meta),'gastos'+(S.colchao?' (+10%)':'')],
+  [meta>0&&r.cross>=0?`${r.need} de ${r.wdIn}`:`— de ${r.wdIn}`,'dias necessários'],
+  [brl(r.per),'líquido/dia'],
+  [brl(sal),'salário/mês']].map(([b,s])=>`<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join('');
  $('#calc').innerHTML=`Por dia: <b>${brl2(+j.diaria)}</b> + ${+j.entregas||0} × <b>${brl2(+j.extra)}</b> − <b>${brl2(+j.custo)}</b> = <b>${brl2(r.per)}</b><br>${nd} dias por semana · ${r.wdIn} dias no período · ganho total <b>${brl(last.w)}</b>`;
  $('#savc').innerHTML=`Na data limite: <b>${brl(last.s)}</b> guardados, dos quais <b>${brl2(last.rend)}</b> são rendimento.${sv.usar?'':' (fora da conta do verão)'}`;
- const tot=sumItems();$('#tot').textContent=brl(tot)+(S.colchao?` + 10% = ${brl(tot*1.1)}`:'');
+ var tot=sumItems();$('#tot').textContent=brl(tot)+(S.colchao?` + 10% = ${brl(tot*1.1)}`:'');
  const cs=S.cats.map((k,i)=>({c:esc(k.n),col:k.c,i,v:S.items.filter(x=>+x.cat===i).reduce((a,b)=>a+(+b.valor||0),0)})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v);
- const mx=Math.max(1,...cs.map(x=>x.v));
- $('#cats').innerHTML=cs.map(x=>`<div class="bar"><span>${x.c}</span><span class="track"><i style="width:${x.v/mx*100}%;background:${x.col}"></i></span><span class="num">${brl(x.v)}</span></div>`).join('')||'<p class="note">Sem gastos ainda.</p>';
+ {const C=2*Math.PI*70;let acc=0;$('#donut').innerHTML=`<circle cx="100" cy="100" r="70" fill="none" stroke="var(--glass2)" stroke-width="30"/>`+cs.map(x=>{const L=x.v/(tot||1)*C,g=cs.length>1?2:0,c=`<circle cx="100" cy="100" r="70" fill="none" stroke="${x.col}" stroke-width="30" stroke-dasharray="${Math.max(0,L-g)} ${C}" stroke-dashoffset="${-acc}"><title>${x.c}: ${brl(x.v)}</title></circle>`;acc+=L;return c}).join('');
+ $('#pc').innerHTML=`<span>total</span><b>${brl(tot)}</b><span>${S.items.length} itens</span>`;
+ $('#lg').innerHTML=cs.map(x=>`<div><i style="background:${x.col}"></i><span>${x.c}</span><b class="num">${brl(x.v)}</b><em>${Math.round(x.v/(tot||1)*100)}%</em></div>`).join('')||'<p class="note">Sem gastos ainda.</p>';
+ const sob=last.tot-meta;$('#sum2').innerHTML=`<div class="kpi"><b>${brl(meta)}</b><span>todos os gastos${S.colchao?' (+10%)':''}</span></div><div class="kpi"><b style="color:${sob>=0?'var(--ok)':'var(--coral)'}">${sob>=0?brl(sob):'−'+brl(-sob)}</b><span>${sob>=0?'sobra na data limite':'falta na data limite'}</span></div>`;
+ $('#bars').textContent=sob>=0?brl(sob):'−'+brl(-sob);$('#bars').style.color=sob>=0?'var(--ok)':'var(--coral)';renderIdeas(r)}
  $('#prio').innerHTML=Object.entries(PRIO).map(([k,v])=>{const s=S.items.filter(x=>x.prio===k).reduce((a,b)=>a+(+b.valor||0),0);return`<div class="kpi"><b>${brl(s)}</b><span>${v}</span></div>`}).join('');
  renderMonths(r);renderScen(r);renderTips(r,sal);renderProj();
  {const f=n=>n.toLocaleString('pt-BR',{maximumFractionDigits:1});
@@ -401,9 +433,48 @@ function renderCalc(){
 }
 function renderMonths(r){
  const rows=[];let pw=0,pr=0,ps=+S.save.saldo||0,pc=0;
- r.R.forEach((o,i)=>{const nx=r.R[i+1];if(!nx||nx.d.getMonth()!==o.d.getMonth()){const rd=o.rend-pr;rows.push({m:MESL[o.d.getMonth()]+(o.d.getMonth()===0||rows.length===0?' '+o.d.getFullYear():''),dias:o.count-pc,w:o.w-pw,dep:o.s-ps-rd,rd,tot:o.tot});pw=o.w;pr=o.rend;ps=o.s;pc=o.count}});
+ r.R.forEach((o,i)=>{const nx=r.R[i+1];if(!nx||nx.d.getMonth()!==o.d.getMonth()){const rd=o.rend-pr;rows.push({m:MES[o.d.getMonth()]+'/'+String(o.d.getFullYear()).slice(2),dias:o.count-pc,w:o.w-pw,dep:o.s-ps-rd,rd,tot:o.tot});pw=o.w;pr=o.rend;ps=o.s;pc=o.count}});
  $('#months tbody').innerHTML=rows.map(x=>`<tr><td>${x.m}</td><td class="num">${x.dias}</td><td class="num">${brl(x.w)}</td><td class="num">${brl(x.dep)}</td><td class="num">${brl2(x.rd)}</td><td class="num"><b>${brl(x.tot)}</b></td></tr>`).join('');
 }
+let ideasOn=false,aiList=[];
+const fvc=(P,M,r,n)=>r?P*(1+r)**n+M*((1+r)**n-1)/r:P+M*n;
+function renderIdeas(r){
+ const sob=r.last.tot-r.meta,per=r.per,f1=n=>n.toLocaleString('pt-BR',{maximumFractionDigits:1});
+ $('#ih').textContent=r.meta<=0?'Com o que sobrar…':sob>=0?`Com ${brl(sob)} sobrando, você pode…`:`Faltam ${brl(-sob)}. Dá pra…`;
+ $('#ishow').textContent=ideasOn?'Esconder ideias':(sob>=0?'Ver o que dá pra fazer':'Ver como fechar a conta');
+ renderAi(sob);
+ if(!ideasOn){$('#ideas').innerHTML='';return}
+ const I=[],items=S.items.filter(x=>+x.valor>0);
+ if(sob>0){
+  I.push(['Guardar metade como reserva',sob/2,`Separe ${brl(sob/2)} num CDB com liquidez diária. Em 6 meses vira uns ${brl(fvc(sob/2,0,.0083,6))}, sem mexer.`]);
+  const byC=S.cats.map((c,i)=>{const it=items.filter(x=>+x.cat===i);return{c,n:it.length,v:it.reduce((a,b)=>a+ +b.valor,0)}}).filter(x=>x.n).sort((a,b)=>b.v-a.v);
+  if(byC[0]){const avg=byC[0].v/byC[0].n,n=Math.floor(sob/avg);if(n>0)I.push([`Mais ${n} ${n>1?'gastos':'gasto'} de ${byC[0].c.n}`,n*avg,`É onde você mais gasta (${brl(byC[0].v)}). Com a sobra cabem mais ${n} no valor médio de ${brl(avg)} cada.`])}
+  const want=items.filter(x=>x.prio!=='e').sort((a,b)=>b.valor-a.valor).find(x=>+x.valor<=sob);
+  if(want){const n=Math.floor(sob/want.valor);I.push([`Repetir "${want.nome}" ${n>1?n+' vezes':'mais uma vez'}`,n*want.valor,`É o maior desejo seu que cabe inteiro na sobra.`])}
+  const big=[...items].sort((a,b)=>b.valor-a.valor)[0];
+  if(big&&+big.valor*2<=sob)I.push([`Turbinar "${big.nome}"`,+big.valor,`Dobrar o orçamento do seu maior gasto: de ${brl(big.valor)} pra ${brl(big.valor*2)}, e ainda sobram ${brl(sob-big.valor)}.`]);
+  if(per>0){const d=Math.min(Math.floor(sob/per),r.wdIn-r.need);if(d>0)I.push([`Folgar ${d} ${d>1?'dias':'dia'}`,d*per,`Em vez de gastar, trabalhe ${d} dias a menos e ainda feche a conta. São ${f1(d*per/sob*100)}% da sobra virando descanso.`])}
+  I.push(['Dividir 50 / 30 / 20',sob,`${brl(sob*.5)} guardados, ${brl(sob*.3)} pra curtir sem culpa e ${brl(sob*.2)} pra um desejo maior depois do verão.`]);
+  I.push(['Deixar tudo rendendo',sob,`Sobra + ${brl(+S.save.mensal)} por mês num CDB: em 12 meses dá uns ${brl(fvc(sob,+S.save.mensal,.00858,12))}.`]);
+ }else if(r.meta>0){
+  const gap=-sob,tal=items.filter(x=>x.prio==='t').sort((a,b)=>b.valor-a.valor);let acc=0,cut=[];for(const x of tal){if(acc>=gap)break;acc+=+x.valor;cut.push(x.nome)}
+  if(cut.length)I.push([`Adiar ${cut.length} ${cut.length>1?'itens':'item'} "Talvez"`,acc,`${cut.join(', ')}. ${acc>=gap?'Isso já fecha a conta.':`Ainda faltariam ${brl(gap-acc)}.`}`]);
+  if(per>0)I.push([`Trabalhar mais ${Math.ceil(gap/per)} dias`,Math.ceil(gap/per)*per,`No seu ritmo de ${brl(per)} por dia, contando a partir do começo.`]);
+  const q=items.filter(x=>x.prio==='q').sort((a,b)=>b.valor-a.valor)[0];if(q)I.push([`Baixar "${q.nome}" pela metade`,q.valor/2,`Procurar uma versão mais barata economiza ${brl(q.valor/2)}.`]);
+  if(+S.job.entregas>0)I.push(['Fazer mais 3 entregas por dia',3*S.job.extra*r.wdIn,`Rende ${brl(3*S.job.extra*r.wdIn)} a mais no período.`]);
+ }
+ $('#ideas').innerHTML=I.map(([h,v,p])=>`<div class="idea"><h3>${esc(h)}</h3><span class="v">${brl(v)}</span><p>${p}</p></div>`).join('')||'<p class="note">Adicione gastos e valores de trabalho pra ver ideias.</p>';
+}
+function renderAi(sob){$('#aiideas').innerHTML=aiList.map(x=>{const v=+x.valor||0,n=v>0?Math.floor(Math.max(0,sob)/v):0;return`<div class="idea${n<1?' off':''}"><h3>${esc(x.titulo)}<span class="tag">Claude</span></h3><span class="v">${brl(v)}</span><p>${esc(x.texto)} ${n<1?'<b>Não cabe na sobra atual.</b>':n>1?`<b>Dá pra fazer ${n} vezes.</b>`:'<b>Cabe na sobra.</b>'}</p></div>`}).join('')}
+$('#ishow').onclick=()=>{ideasOn=!ideasOn;renderIdeas(cur)};
+let smp=null;
+(async()=>{try{if(!window.claude?.use)return;smp=await claude.use('sample');if(smp)$('#iai').hidden=false}catch(e){}})();
+$('#iai').onclick=async()=>{if(!smp)return;const b=$('#iai'),r=cur,sob=r.last.tot-r.meta;b.disabled=true;b.textContent='Pensando…';
+ const data={sobra:Math.round(sob),periodo:`${S.job.ini} a ${S.job.fim}`,ganho_por_dia:Math.round(r.per),itens:S.items.map(x=>({nome:x.nome,valor:+x.valor,categoria:(S.cats[x.cat]||{}).n,prioridade:PRIO[x.prio]}))};
+ const prompt=`Você ajuda um jovem do Rio Grande do Sul (Brasil) a planejar o dinheiro do verão. Dados: ${JSON.stringify(data)}. ${sob>0?`Sugira 5 ideias concretas do que ele pode fazer com a sobra de R$ ${Math.round(sob)}, combinando com os gostos que aparecem nos itens e categorias (mais do que ele já curte, upgrades, experiências de verão, e pelo menos 1 de guardar/investir).`:`Ele está com falta de R$ ${Math.round(-sob)}. Sugira 5 ideias concretas pra fechar a conta (cortes, trocas por versões mais baratas, renda extra).`} Preços realistas no Brasil em reais. Responda só JSON: um array de objetos {"titulo": até 6 palavras, "valor": número em reais, "texto": 1 frase curta e direta, em português informal}.`;
+ try{const v=await smp.json(prompt);aiList=(Array.isArray(v)?v:(v&&v.ideias)||[]).filter(x=>x&&x.titulo).slice(0,6);renderAi(sob)}
+ catch(e){if(e&&e.code==='not_granted'){b.hidden=true}else toast(e&&e.code==='rate_limited'?'Muitos pedidos, tente daqui a pouco':'Não deu pra pedir ideias agora',false)}
+ b.disabled=false;b.textContent='Pedir novas ideias pro Claude'};
 function renderProj(){const sv=S.save,P=+sv.saldo||0,M=+sv.mensal||0;const fv=(r,n)=>r?P*(1+r)**n+M*((1+r)**n-1)/r:P+M*n;
  $('#proj tbody').innerHTML=[[6,.0083],[12,.00858],[24,.00884]].map(([n,c])=>`<tr><td>${n} meses</td><td class="num">${brl(fv(0,n))}</td><td class="num">${brl(fv(.005,n))}</td><td class="num"><b>${brl(fv(c,n))}</b></td></tr>`).join('')}
 const PAT=[['3 dias (sex a dom)',[0,5,6]],['4 dias (qui a dom)',[0,4,5,6]],['5 dias (qua a dom)',[0,3,4,5,6]],['6 dias (ter a dom)',[0,2,3,4,5,6]],['Todos os dias',[0,1,2,3,4,5,6]]];
