@@ -78,6 +78,8 @@ p{margin:0}
 .idea.off{opacity:.5}.idea .tag{font-size:11px;font-weight:600;padding:1px 8px;border-radius:999px;background:color-mix(in srgb,var(--sun) 18%,transparent);color:var(--ink);margin-left:6px;vertical-align:2px}
 @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .ib{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.gk{margin-top:10px;padding:12px;border-radius:18px;background:var(--glass2);border:1px solid var(--edge)}.gk[hidden]{display:none}.gk a{color:var(--sea)}
+.gkr{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:6px}.gkr input{min-height:40px;font-size:15px;padding:6px 10px;border-radius:12px;border:1px solid var(--edge);background:var(--glass)}
 .fig>svg{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y}
 svg text{font:13px Inter,sans-serif;fill:var(--mute);paint-order:stroke;stroke:var(--glass2);stroke-width:4px}
 svg .strong{fill:var(--ink);font-weight:600;font-size:14px}
@@ -246,7 +248,12 @@ body{padding-bottom:96px}
   <div class="glass">
    <h2 id="ih">Com o que sobrar…</h2>
    <p class="note" style="margin:0" id="isub">Ideias com base nos seus gastos. Mudam sozinhas quando você mexe nos valores.</p>
-   <div class="ib"><button class="btn pri" type="button" id="ishow">Ver o que dá pra fazer</button><button class="btn" type="button" id="iai" hidden>Pedir ideias pro Claude</button></div>
+   <div class="ib"><button class="btn pri" type="button" id="ishow">Ver o que dá pra fazer</button><button class="btn" type="button" id="iai" hidden>Pedir ideias pro Claude</button><button class="btn" type="button" id="igem">Pedir ideias pra IA (Gemini)</button><button class="btn" type="button" id="igk" title="Configurar chave do Gemini" aria-label="Configurar chave do Gemini">Chave</button></div>
+   <div class="gk" id="gk" hidden>
+    <p class="note" style="margin:0 0 8px">Pegue uma chave grátis em <a href="https://aistudio.google.com/apikey">aistudio.google.com/apikey</a> e cole aqui. Ela fica salva só neste navegador e nunca vai pro GitHub.</p>
+    <div class="gkr"><input type="password" id="gkey" placeholder="Cole sua chave do Gemini" autocomplete="off" aria-label="Chave do Gemini"><input type="text" id="gmod" aria-label="Modelo do Gemini" title="Modelo"></div>
+    <div class="ib" style="margin-top:8px"><button class="btn pri" type="button" id="gsave">Salvar e pedir ideias</button><button class="btn" type="button" id="gdel">Apagar chave</button></div>
+   </div>
    <div class="ideas" id="ideas"></div>
    <div class="ideas" id="aiideas"></div>
   </div>
@@ -465,16 +472,33 @@ function renderIdeas(r){
  }
  $('#ideas').innerHTML=I.map(([h,v,p])=>`<div class="idea"><h3>${esc(h)}</h3><span class="v">${brl(v)}</span><p>${p}</p></div>`).join('')||'<p class="note">Adicione gastos e valores de trabalho pra ver ideias.</p>';
 }
-function renderAi(sob){$('#aiideas').innerHTML=aiList.map(x=>{const v=+x.valor||0,n=v>0?Math.floor(Math.max(0,sob)/v):0;return`<div class="idea${n<1?' off':''}"><h3>${esc(x.titulo)}<span class="tag">Claude</span></h3><span class="v">${brl(v)}</span><p>${esc(x.texto)} ${n<1?'<b>Não cabe na sobra atual.</b>':n>1?`<b>Dá pra fazer ${n} vezes.</b>`:'<b>Cabe na sobra.</b>'}</p></div>`}).join('')}
+function renderAi(sob){$('#aiideas').innerHTML=aiList.map(x=>{const v=+x.valor||0,n=v>0?Math.floor(Math.max(0,sob)/v):0;return`<div class="idea${n<1?' off':''}"><h3>${esc(x.titulo)}<span class="tag">${esc(x.src||"IA")}</span></h3><span class="v">${brl(v)}</span><p>${esc(x.texto)} ${n<1?'<b>Não cabe na sobra atual.</b>':n>1?`<b>Dá pra fazer ${n} vezes.</b>`:'<b>Cabe na sobra.</b>'}</p></div>`}).join('')}
 $('#ishow').onclick=()=>{ideasOn=!ideasOn;renderIdeas(cur)};
 let smp=null;
-(async()=>{try{if(!window.claude?.use)return;smp=await claude.use('sample');if(smp)$('#iai').hidden=false}catch(e){}})();
-$('#iai').onclick=async()=>{if(!smp)return;const b=$('#iai'),r=cur,sob=r.last.tot-r.meta;b.disabled=true;b.textContent='Pensando…';
+(async()=>{try{if(!window.claude?.use)return;smp=await claude.use('sample');if(smp){$('#iai').hidden=false;$('#igem').hidden=true;$('#igk').hidden=true}}catch(e){}})();
+function aiPrompt(){const r=cur,sob=r.last.tot-r.meta;
  const data={sobra:Math.round(sob),periodo:`${S.job.ini} a ${S.job.fim}`,ganho_por_dia:Math.round(r.per),itens:S.items.map(x=>({nome:x.nome,valor:+x.valor,categoria:(S.cats[x.cat]||{}).n,prioridade:PRIO[x.prio]}))};
- const prompt=`Você ajuda um jovem do Rio Grande do Sul (Brasil) a planejar o dinheiro do verão. Dados: ${JSON.stringify(data)}. ${sob>0?`Sugira 5 ideias concretas do que ele pode fazer com a sobra de R$ ${Math.round(sob)}, combinando com os gostos que aparecem nos itens e categorias (mais do que ele já curte, upgrades, experiências de verão, e pelo menos 1 de guardar/investir).`:`Ele está com falta de R$ ${Math.round(-sob)}. Sugira 5 ideias concretas pra fechar a conta (cortes, trocas por versões mais baratas, renda extra).`} Preços realistas no Brasil em reais. Responda só JSON: um array de objetos {"titulo": até 6 palavras, "valor": número em reais, "texto": 1 frase curta e direta, em português informal}.`;
- try{const v=await smp.json(prompt);aiList=(Array.isArray(v)?v:(v&&v.ideias)||[]).filter(x=>x&&x.titulo).slice(0,6);renderAi(sob)}
+ return{sob,prompt:`Você ajuda um jovem do Rio Grande do Sul (Brasil) a planejar o dinheiro do verão. Dados: ${JSON.stringify(data)}. ${sob>0?`Sugira 5 ideias concretas do que ele pode fazer com a sobra de R$ ${Math.round(sob)}, combinando com os gostos que aparecem nos itens e categorias (mais do que ele já curte, upgrades, experiências de verão, e pelo menos 1 de guardar/investir).`:`Ele está com falta de R$ ${Math.round(-sob)}. Sugira 5 ideias concretas pra fechar a conta (cortes, trocas por versões mais baratas, renda extra).`} Preços realistas no Brasil em reais. Responda só JSON: um array de objetos {"titulo": até 6 palavras, "valor": número em reais, "texto": 1 frase curta e direta, em português informal}.`}}
+const takeAi=(v,src)=>{aiList=(Array.isArray(v)?v:(v&&(v.ideias||v.ideas))||[]).filter(x=>x&&x.titulo).slice(0,6).map(x=>({...x,src}));renderAi(cur.last.tot-cur.meta)};
+$('#iai').onclick=async()=>{if(!smp)return;const b=$('#iai');b.disabled=true;b.textContent='Pensando…';const{prompt}=aiPrompt();
+ try{takeAi(await smp.json(prompt),'Claude')}
  catch(e){if(e&&e.code==='not_granted'){b.hidden=true}else toast(e&&e.code==='rate_limited'?'Muitos pedidos, tente daqui a pouco':'Não deu pra pedir ideias agora',false)}
  b.disabled=false;b.textContent='Pedir novas ideias pro Claude'};
+const GK='verao-gemini-key',GM='verao-gemini-model',GDEF='gemini-flash-latest';
+const lsGet=k=>{try{return localStorage.getItem(k)||''}catch(e){return''}},lsSet=(k,v)=>{try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}};
+function showKey(){$('#gk').hidden=false;$('#gkey').value=lsGet(GK);$('#gmod').value=lsGet(GM)||GDEF;$('#gkey').focus()}
+$('#igk').onclick=()=>{$('#gk').hidden?showKey():$('#gk').hidden=true};
+$('#gdel').onclick=()=>{lsSet(GK,'');$('#gkey').value='';toast('Chave apagada deste navegador',false)};
+$('#gsave').onclick=()=>{const k=$('#gkey').value.trim();if(!k)return $('#gkey').focus();lsSet(GK,k);lsSet(GM,$('#gmod').value.trim()||GDEF);$('#gk').hidden=true;askGemini()};
+$('#igem').onclick=()=>{lsGet(GK)?askGemini():showKey()};
+async function askGemini(){const key=lsGet(GK),model=lsGet(GM)||GDEF,b=$('#igem');if(!key)return showKey();b.disabled=true;b.textContent='Pensando…';const{prompt}=aiPrompt();
+ try{const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{responseMimeType:'application/json',temperature:0.9}})});
+  const j=await res.json().catch(()=>({}));
+  if(!res.ok){const m=(j.error&&j.error.message)||'';throw{st:res.status,m}}
+  const t=(j.candidates?.[0]?.content?.parts||[]).map(p=>p.text||'').join('').replace(/^```(json)?|```$/g,'').trim();
+  takeAi(JSON.parse(t),'Gemini')}
+ catch(e){const st=e&&e.st;toast(st===400||st===401||st===403?'Chave inválida. Confira em "Chave".':st===404?'Modelo não encontrado. Troque o nome do modelo em "Chave".':st===429?'Limite grátis atingido, tente mais tarde.':'Não deu pra falar com o Gemini agora.',false);if(st===400||st===401||st===403||st===404)showKey()}
+ b.disabled=false;b.textContent='Pedir novas ideias (Gemini)'}
 function renderProj(){const sv=S.save,P=+sv.saldo||0,M=+sv.mensal||0;const fv=(r,n)=>r?P*(1+r)**n+M*((1+r)**n-1)/r:P+M*n;
  $('#proj tbody').innerHTML=[[6,.0083],[12,.00858],[24,.00884]].map(([n,c])=>`<tr><td>${n} meses</td><td class="num">${brl(fv(0,n))}</td><td class="num">${brl(fv(.005,n))}</td><td class="num"><b>${brl(fv(c,n))}</b></td></tr>`).join('')}
 const PAT=[['3 dias (sex a dom)',[0,5,6]],['4 dias (qui a dom)',[0,4,5,6]],['5 dias (qua a dom)',[0,3,4,5,6]],['6 dias (ter a dom)',[0,2,3,4,5,6]],['Todos os dias',[0,1,2,3,4,5,6]]];
