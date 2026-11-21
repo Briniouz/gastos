@@ -78,11 +78,39 @@ th{text-align:left;font-weight:500;color:var(--mute);font-size:13px;padding:8px 
 td{padding:6px;border-bottom:1px solid var(--edge);vertical-align:middle}
 .num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 .scroll{overflow-x:auto}
-#items input,#items select{min-height:40px;padding:6px 10px;border-radius:12px}
-#items td:nth-child(2){width:6em}#items td:nth-child(3){width:11em}#items td:nth-child(4){width:7.5em}#items td:nth-child(5){width:44px}
-.del{width:40px;height:40px;border-radius:12px;border:1px solid var(--edge);background:transparent;cursor:pointer;color:var(--mute);font-size:20px;line-height:1}
+.del{width:32px;height:32px;border-radius:10px;border:1px solid var(--edge);background:transparent;cursor:pointer;color:var(--mute);font-size:20px;line-height:1}
 .del:hover{color:var(--coral)}
-.add{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr) auto;gap:8px;margin-top:14px}
+.add{display:grid;grid-template-columns:minmax(0,1.8fr) 5.5em minmax(0,1fr) 6.5em auto;gap:6px;margin-top:10px;padding:6px;border-radius:18px;background:var(--glass2);border:1px solid var(--edge)}
+.add input,.add select{min-height:38px;font-size:15px;padding:6px 10px;border-radius:12px;background:transparent;border:1px solid transparent}
+.add input:focus,.add select:focus{border-color:var(--edge);background:var(--glass)}
+.add .btn{min-height:38px;padding:6px 16px;font-size:15px}
+.list{display:grid;gap:2px}
+.it{display:grid;grid-template-columns:10px minmax(0,1fr) auto auto 6.5em 32px;grid-template-areas:"d n c p v x";gap:8px;align-items:center;padding:4px 6px 4px 10px;border-radius:14px;transition:background .15s}
+.it:hover,.it:focus-within{background:var(--glass2)}
+.dot{grid-area:d;width:10px;height:10px;border-radius:50%;box-shadow:0 0 0 3px color-mix(in srgb,currentColor 0%,transparent)}
+.it input{border:0;background:transparent;min-height:34px;padding:4px 6px;border-radius:10px;width:100%;font-size:15px;outline:none;color:var(--ink)}
+.it input:focus{background:var(--glass);box-shadow:0 0 0 1px var(--edge)}
+.it .nm{grid-area:n;font-weight:500}
+.it input[type=number]::-webkit-inner-spin-button,.add input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+.it input[type=number],.add input[type=number]{-moz-appearance:textfield}
+.chip{grid-area:c;-webkit-appearance:none;appearance:none;border:1px solid var(--edge);background:var(--glass2);border-radius:999px;padding:3px 12px;font-size:13px;min-height:28px;max-width:10.5em;cursor:pointer;color:var(--mute);text-overflow:ellipsis}
+.pr{grid-area:p;border:0;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;min-height:26px;min-width:6.2em;cursor:pointer}
+.p-e{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
+.p-q{background:rgba(255,122,26,.17);color:light-dark(#b04a00,#ffa15c)}
+.p-t{background:var(--glass2);color:var(--mute)}
+.vl{grid-area:v;display:flex;align-items:center;font-size:13px;color:var(--mute)}
+.vl input{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.it .del{grid-area:x;border-color:transparent;opacity:.45}
+.it:hover .del,.it:focus-within .del{opacity:1}
+.nc{display:flex;gap:6px;align-items:center;margin-top:8px;padding:6px;border-radius:16px;background:var(--glass2);border:1px solid var(--edge)}
+.nc[hidden]{display:none}
+.nc input{flex:1;min-height:36px;font-size:15px;padding:6px 10px;border-radius:12px;border:1px solid var(--edge);background:var(--glass)}
+.nc .btn{min-height:36px;padding:4px 14px;font-size:14px}
+.cl{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.cl span{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:2px 4px 2px 10px;border-radius:999px;border:1px solid var(--edge);color:var(--mute);min-height:26px}
+.cl span i{width:8px;height:8px;border-radius:50%}
+.cl button{border:0;background:none;color:var(--mute);cursor:pointer;font-size:15px;width:22px;height:22px;border-radius:50%}
+.cl button:hover{color:var(--coral)}
 .tot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:12px;font-weight:600}
 .bars{display:grid;gap:10px;margin:12px 0 18px}
 .bar{display:grid;grid-template-columns:8.5em minmax(0,1fr) 5.5em;gap:10px;align-items:center;font-size:14px}
@@ -104,13 +132,12 @@ tr.cur td{font-weight:600}
 @media(max-width:900px){.r1,.r2,.r3{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:600px){
  .f2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
- .add{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.add input:first-child{grid-column:1/-1}
+ .add{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.add input:first-child{grid-column:1/-1}.add input,.add select{font-size:16px}
+ .it{grid-template-columns:10px minmax(0,1fr) auto 6em 32px;grid-template-areas:"d n n v x" ". c p p .";row-gap:2px;padding:6px 4px 8px 8px;border-bottom:1px solid var(--edge);border-radius:0}
+ .it .chip{justify-self:stretch;max-width:none}.it .pr{justify-self:start}.it input{font-size:16px}
  table{font-size:13px}th,td{padding:6px 4px}
  .stack thead{display:none}.stack tr{display:grid;padding-block:8px;border-bottom:1px solid var(--edge)}.stack td{display:flex;justify-content:space-between;gap:12px;border:0;padding:3px 0}.stack td::before{content:attr(data-l);color:var(--mute)}
  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
- #items tr{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.3fr) minmax(0,1fr);gap:6px;padding:8px 0;border-bottom:1px solid var(--edge)}#items td{width:auto!important;border:0;padding:0}
- #items td:nth-child(1){grid-column:1/3;grid-row:1}#items td:nth-child(5){grid-column:3;grid-row:1;justify-self:end}#items td:nth-child(2){grid-row:2;grid-column:1}#items td:nth-child(3){grid-row:2;grid-column:2}#items td:nth-child(4){grid-row:2;grid-column:3}
- #items thead{display:none}
  .bar{grid-template-columns:7em minmax(0,1fr) 5em}
  #bar{display:flex;position:fixed;left:10px;right:10px;bottom:10px;z-index:10;justify-content:space-between;gap:10px;padding:10px 16px;border-radius:20px;font-size:14px}
  #bar b{font:600 18px Outfit,sans-serif;white-space:nowrap}
@@ -160,8 +187,8 @@ tr.cur td{font-weight:600}
  <section class="row r3">
   <div class="glass">
    <h2>O que eu quero gastar no verão</h2>
-   <p class="note" style="margin:0 0 10px">Itens de exemplo: edite direto na lista ou apague.</p>
-   <div class="scroll"><table id="items"><thead><tr><th>Item</th><th class="num">Valor</th><th>Categoria</th><th>Prioridade</th><th></th></tr></thead><tbody></tbody></table></div>
+   <p class="note" style="margin:0 0 10px">Clique no nome ou no valor pra editar; clique na prioridade pra trocar.</p>
+   <div class="list" id="items"></div>
    <form class="add" id="addf">
     <input type="text" id="an" placeholder="Novo item (ex.: óculos de sol)" aria-label="Nome do item" required>
     <input type="number" id="av" placeholder="R$" min="0" step="1" aria-label="Valor" inputmode="decimal" required>
@@ -169,6 +196,8 @@ tr.cur td{font-weight:600}
     <select id="ap" aria-label="Prioridade"><option value="e">Essencial</option><option value="q" selected>Quero</option><option value="t">Talvez</option></select>
     <button class="btn pri" type="submit">Adicionar</button>
    </form>
+   <div class="nc" id="nc" hidden><input id="ncn" placeholder="Nome da nova categoria" maxlength="24" aria-label="Nome da nova categoria"><button class="btn pri" type="button" id="ncok">Criar</button><button class="btn" type="button" id="ncx">Cancelar</button></div>
+   <div class="cl" id="cl"></div>
    <label class="chk"><input type="checkbox" id="colchao"> Somar 10% de colchão pra imprevistos</label>
    <div class="tot"><span>Total planejado</span><span id="tot"></span></div>
   </div>
@@ -248,6 +277,8 @@ const MESL=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agost
 const DS=['D','S','T','Q','Q','S','S'],DL=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
 const CATS=['Praia e viagens','Roupas e estilo','Rolês e festas','Tecnologia','Comida','Outros'];
 const CATC=['#0aa5c8','#ff7a1a','#e23d5a','#2f6fe0','#f2b705','#8a97a3'];
+const NEWC=['#16a34a','#db2777','#0d9488','#9333ea','#ca8a04','#ea580c','#475569'];
+const defCats=()=>CATS.map((n,i)=>({n,c:CATC[i]}));
 const PRIO={e:'Essencial',q:'Quero',t:'Talvez'};
 const RATES={cdb:0.83,poupanca:0.5,casa:0};
 const MIN_DIA=54.04,IFOOD_MOTO=7.5,IFOOD_BIKE=7;
@@ -262,8 +293,8 @@ const DEF=()=>({items:[
  {id:7,nome:'Fone sem fio',valor:250,cat:3,prio:'t'},
  {id:8,nome:'Show ou festa',valor:200,cat:2,prio:'t'}],
  job:{preset:'rest',diaria:60,entregas:12,extra:5,custo:25,ini:'2026-12-01',fim:'2027-02-28',dias:[true,false,false,true,true,true,true],feriados:true},
- save:{saldo:300,mensal:200,tipo:'cdb',taxa:0.83,usar:true},colchao:true,nid:9});
-const fix=d=>{const b=DEF();if(!d||!Array.isArray(d.items))return b;return{...b,...d,job:{...b.job,...d.job},save:{...b.save,...d.save}}};
+ save:{saldo:300,mensal:200,tipo:'cdb',taxa:0.83,usar:true},colchao:true,nid:9,cats:defCats()});
+const fix=d=>{const b=DEF();if(!d||!Array.isArray(d.items))return b;const o={...b,...d,job:{...b.job,...d.job},save:{...b.save,...d.save}};if(!Array.isArray(o.cats)||!o.cats.length)o.cats=defCats();o.items.forEach(x=>{if(!(+x.cat>=0&&+x.cat<o.cats.length))x.cat=o.cats.length-1});return o};
 const KEY='verao-no-azul-v1';
 let S;
 try{const h=window.claude?.hot?.data;S=fix(h&&h.items?h:JSON.parse(localStorage.getItem(KEY)||'null'))}catch(e){S=DEF()}
@@ -301,14 +332,22 @@ function sim(dias,taxa){
 }
 
 let cur=null,geo=null,shown=0;
+const catOpts=sel=>S.cats.map((c,i)=>`<option value="${i}"${+sel===i?' selected':''}>${esc(c.n)}</option>`).join('')+'<option value="new">+ Nova categoria…</option>';
+const PN={e:'q',q:'t',t:'e'};
 function renderItems(){
- $('#items tbody').innerHTML=S.items.map(it=>`<tr data-id="${it.id}">
-  <td><input type="text" data-k="nome" value="${esc(it.nome)}" aria-label="Nome"></td>
-  <td><input type="number" data-k="valor" value="${it.valor}" min="0" step="1" aria-label="Valor" inputmode="decimal" style="text-align:right"></td>
-  <td><select data-k="cat" aria-label="Categoria">${CATS.map((c,i)=>`<option value="${i}"${+it.cat===i?' selected':''}>${c}</option>`).join('')}</select></td>
-  <td><select data-k="prio" aria-label="Prioridade">${Object.entries(PRIO).map(([k,v])=>`<option value="${k}"${it.prio===k?' selected':''}>${v}</option>`).join('')}</select></td>
-  <td><button class="del" data-del="${it.id}" aria-label="Remover ${esc(it.nome)}">×</button></td></tr>`).join('')||`<tr><td colspan="5" class="note">Nenhum item ainda. Adicione o primeiro abaixo.</td></tr>`;
+ $('#items').innerHTML=S.items.map(it=>{const c=S.cats[it.cat]||S.cats[0];return`<div class="it" data-id="${it.id}"><span class="dot" style="background:${c.c}"></span><input class="nm" type="text" data-k="nome" value="${esc(it.nome)}" aria-label="Nome"><select class="chip" data-k="cat" aria-label="Categoria">${catOpts(it.cat)}</select><button type="button" class="pr p-${it.prio}" data-pr title="Clique pra trocar a prioridade">${PRIO[it.prio]}</button><span class="vl">R$<input type="number" data-k="valor" value="${it.valor}" min="0" step="1" inputmode="decimal" aria-label="Valor"></span><button type="button" class="del" data-del="${it.id}" aria-label="Remover ${esc(it.nome)}">×</button></div>`}).join('')||'<p class="note">Nenhum item ainda. Adicione o primeiro abaixo.</p>';
+ const av=$('#ac').value;$('#ac').innerHTML=catOpts(av==='new'||av===''?0:+av);
+ const used=new Set(S.items.map(x=>+x.cat));
+ $('#cl').innerHTML=S.cats.map((c,i)=>`<span><i style="background:${c.c}"></i>${esc(c.n)}${used.has(i)?'<b style="width:6px"></b>':`<button type="button" data-rc="${i}" aria-label="Apagar categoria ${esc(c.n)}">×</button>`}</span>`).join('');
 }
+let ncT=null;
+function openNew(t){ncT=t;$('#nc').hidden=false;$('#ncn').value='';$('#ncn').focus()}
+function closeNew(){ncT=null;$('#nc').hidden=true;renderItems()}
+function createCat(){const n=$('#ncn').value.trim();if(!n)return $('#ncn').focus();let i=S.cats.findIndex(c=>c.n.toLowerCase()===n.toLowerCase());
+ if(i<0){S.cats.push({n,c:NEWC[Math.max(0,S.cats.length-6)%NEWC.length]});i=S.cats.length-1}
+ const t=ncT;ncT=null;$('#nc').hidden=true;
+ if(t==='add'){renderItems();$('#ac').value=i}else{const it=S.items.find(x=>x.id==t);if(it)it.cat=i;renderItems()}
+ renderCalc()}
 function fillControls(){
  const j=S.job,sv=S.save;
  for(const k of['diaria','entregas','extra','custo','ini','fim'])$('#'+k).value=j[k];
@@ -338,9 +377,9 @@ function renderCalc(){
  $('#calc').innerHTML=`Por dia: <b>${brl2(+j.diaria)}</b> + ${+j.entregas||0} × <b>${brl2(+j.extra)}</b> − <b>${brl2(+j.custo)}</b> = <b>${brl2(r.per)}</b><br>${nd} dias por semana · ${r.wdIn} dias no período · ganho total <b>${brl(last.w)}</b>`;
  $('#savc').innerHTML=`Na data limite: <b>${brl(last.s)}</b> guardados, dos quais <b>${brl2(last.rend)}</b> são rendimento.${sv.usar?'':' (fora da conta do verão)'}`;
  const tot=sumItems();$('#tot').textContent=brl(tot)+(S.colchao?` + 10% = ${brl(tot*1.1)}`:'');
- const cs=CATS.map((c,i)=>({c,i,v:S.items.filter(x=>+x.cat===i).reduce((a,b)=>a+(+b.valor||0),0)})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v);
+ const cs=S.cats.map((k,i)=>({c:esc(k.n),col:k.c,i,v:S.items.filter(x=>+x.cat===i).reduce((a,b)=>a+(+b.valor||0),0)})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v);
  const mx=Math.max(1,...cs.map(x=>x.v));
- $('#cats').innerHTML=cs.map(x=>`<div class="bar"><span>${x.c}</span><span class="track"><i style="width:${x.v/mx*100}%;background:${CATC[x.i]}"></i></span><span class="num">${brl(x.v)}</span></div>`).join('')||'<p class="note">Sem gastos ainda.</p>';
+ $('#cats').innerHTML=cs.map(x=>`<div class="bar"><span>${x.c}</span><span class="track"><i style="width:${x.v/mx*100}%;background:${x.col}"></i></span><span class="num">${brl(x.v)}</span></div>`).join('')||'<p class="note">Sem gastos ainda.</p>';
  $('#prio').innerHTML=Object.entries(PRIO).map(([k,v])=>{const s=S.items.filter(x=>x.prio===k).reduce((a,b)=>a+(+b.valor||0),0);return`<div class="kpi"><b>${brl(s)}</b><span>${v}</span></div>`}).join('');
  renderMonths(r);renderScen(r);renderTips(r,sal);renderProj();
  $('#wd').innerHTML=r.per>0?[...S.items].sort((a,b)=>b.valor-a.valor).slice(0,6).map(x=>`<div><span>${esc(x.nome)}</span><b>${(x.valor/r.per).toLocaleString('pt-BR',{maximumFractionDigits:1})} dias</b></div>`).join(''):'<p class="note">Ajuste o ganho por dia pra ver.</p>';
@@ -429,7 +468,7 @@ $('#undo').onclick=()=>{if(!undoS)return;S=undoS;undoS=null;fillControls();rende
 const snapUndo=()=>{undoS=JSON.parse(JSON.stringify(S))};
 
 $('#preset').innerHTML=Object.entries(PRESETS).map(([k,v])=>`<option value="${k}">${v.n}</option>`).join('');
-$('#ac').innerHTML=CATS.map((c,i)=>`<option value="${i}">${c}</option>`).join('');
+
 $('#preset').addEventListener('change',e=>{const p=PRESETS[e.target.value];S.job.preset=e.target.value;if(p.diaria!=null){for(const k of['diaria','entregas','extra','custo'])S.job[k]=p[k];fillControls()}renderCalc()});
 for(const k of['diaria','entregas','extra','custo'])$('#'+k).addEventListener('input',e=>{S.job[k]=Math.max(0,+e.target.value||0);S.job.preset='custom';$('#preset').value='custom';renderCalc()});
 for(const k of['ini','fim'])$('#'+k).addEventListener('change',e=>{if(e.target.value){S.job[k]=e.target.value;renderCalc()}});
@@ -439,10 +478,16 @@ for(const k of['saldo','mensal','taxa'])$('#'+k).addEventListener('input',e=>{S.
 $('#tipo').addEventListener('change',e=>{S.save.tipo=e.target.value;S.save.taxa=RATES[e.target.value];$('#taxa').value=S.save.taxa;renderCalc()});
 $('#usar').addEventListener('change',e=>{S.save.usar=e.target.checked;renderCalc()});
 $('#colchao').addEventListener('change',e=>{S.colchao=e.target.checked;renderCalc()});
-const tb=$('#items tbody');
-tb.addEventListener('input',e=>{const k=e.target.dataset.k,tr=e.target.closest('tr');if(!k||!tr)return;const it=S.items.find(x=>x.id==tr.dataset.id);if(!it)return;it[k]=k==='valor'?Math.max(0,+e.target.value||0):k==='cat'?+e.target.value:e.target.value;renderCalc()});
-tb.addEventListener('click',e=>{const b=e.target.closest('[data-del]');if(!b)return;snapUndo();const it=S.items.find(x=>x.id==b.dataset.del);S.items=S.items.filter(x=>x.id!=b.dataset.del);renderItems();renderCalc();toast(`"${it?it.nome:'Item'}" removido`,true)});
-$('#addf').addEventListener('submit',e=>{e.preventDefault();const n=$('#an').value.trim(),v=+$('#av').value;if(!n||!(v>=0))return;S.items.push({id:S.nid++,nome:n,valor:v,cat:+$('#ac').value,prio:$('#ap').value});$('#an').value='';$('#av').value='';renderItems();renderCalc();$('#an').focus()});
+const tb=$('#items');
+tb.addEventListener('input',e=>{const k=e.target.dataset.k,row=e.target.closest('.it');if(!k||!row||e.target.tagName==='SELECT')return;const it=S.items.find(x=>x.id==row.dataset.id);if(!it)return;it[k]=k==='valor'?Math.max(0,+e.target.value||0):e.target.value;renderCalc()});
+tb.addEventListener('change',e=>{if(e.target.dataset.k!=='cat')return;const row=e.target.closest('.it'),it=S.items.find(x=>x.id==row.dataset.id);if(!it)return;if(e.target.value==='new')return openNew(it.id);it.cat=+e.target.value;renderItems();renderCalc()});
+tb.addEventListener('click',e=>{const p=e.target.closest('[data-pr]');if(p){const it=S.items.find(x=>x.id==p.closest('.it').dataset.id);it.prio=PN[it.prio];p.className='pr p-'+it.prio;p.textContent=PRIO[it.prio];renderCalc();return}
+ const b=e.target.closest('[data-del]');if(!b)return;snapUndo();const it=S.items.find(x=>x.id==b.dataset.del);S.items=S.items.filter(x=>x.id!=b.dataset.del);renderItems();renderCalc();toast(`"${it?it.nome:'Item'}" removido`,true)});
+$('#ac').addEventListener('change',e=>{if(e.target.value==='new')openNew('add')});
+$('#ncok').onclick=createCat;$('#ncx').onclick=closeNew;
+$('#ncn').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();createCat()}else if(e.key==='Escape')closeNew()});
+$('#cl').addEventListener('click',e=>{const b=e.target.closest('[data-rc]');if(!b)return;const i=+b.dataset.rc;if(S.items.some(x=>+x.cat===i))return;snapUndo();S.cats.splice(i,1);S.items.forEach(x=>{if(+x.cat>i)x.cat--});renderItems();renderCalc();toast('Categoria apagada',true)});
+$('#addf').addEventListener('submit',e=>{e.preventDefault();const n=$('#an').value.trim(),v=+$('#av').value;if(!n||!(v>=0))return;S.items.push({id:S.nid++,nome:n,valor:v,cat:$('#ac').value==='new'?0:+$('#ac').value,prio:$('#ap').value});$('#an').value='';$('#av').value='';renderItems();renderCalc();$('#an').focus()});
 $('#reset').onclick=()=>{snapUndo();S=DEF();fillControls();renderItems();renderCalc();toast('Exemplo restaurado',true)};
 $('#copy').onclick=()=>{const r=cur,l=r.last;const txt=`Verão no Azul\nGastos planejados: ${brl(r.meta)}\nTrabalho: ${brl2(r.per)} líquido por dia, ${r.wdIn} dias de ${fd(pd(S.job.ini))} a ${fd(r.fim)}\nTotal na data limite: ${brl(l.tot)} (trabalho ${brl(l.w)}${S.save.usar?` + poupança ${brl(l.s)}`:''})\n${$('#status').textContent}`;
  const done=()=>toast('Resumo copiado',false);try{navigator.clipboard.writeText(txt).then(done,()=>toast('Não deu pra copiar aqui',false))}catch(err){toast('Não deu pra copiar aqui',false)}};
