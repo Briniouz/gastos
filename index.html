@@ -208,7 +208,7 @@ body{padding-bottom:96px}
 <div class="wrap">
  <header class="top">
   <div><h1>Verão no Azul</h1><p class="sub">Gastos do verão, dias de trabalho e poupança num lugar só.</p></div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><div class="skins" id="skins" role="group" aria-label="Tema"></div><button class="btn" id="org">Organizar painéis</button><button class="btn" id="xbtn">Exportar / Importar</button><button class="btn" id="copy">Copiar resumo</button><button class="btn" id="reset">Restaurar exemplo</button></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><div class="skins" id="skins" role="group" aria-label="Tema"></div><button class="btn" id="org">Organizar painéis</button><button class="btn" id="inst" hidden>Instalar app</button><button class="btn" id="xbtn">Exportar / Importar</button><button class="btn" id="copy">Copiar resumo</button><button class="btn" id="reset">Restaurar exemplo</button></div>
  </header>
 
  <div class="glass xp" id="xp" hidden>
@@ -687,7 +687,13 @@ const dec=raw=>{let t=String(raw||'').trim();if(!t)throw new Error('vazio');
  t=t.replace(/[^A-Za-z0-9+/=_-]/g,'').replace(/-/g,'+').replace(/_/g,'/').replace(/=+$/,'');while(t.length%4)t+='=';
  return JSON.parse(decodeURIComponent(escape(atob(t))))};
 const onGh=!/claude|anthropic/i.test(location.hostname)&&/^https?:$/.test(location.protocol);
-if(onGh){$('#xlink').hidden=false;$('#xfile').hidden=false}
+if(onGh){$('#xlink').hidden=false;$('#xfile').hidden=false;
+ for(const[r,h,x]of[['manifest','manifest.json'],['apple-touch-icon','apple-touch-icon.png'],['icon','icon-192.png']]){const l=document.createElement('link');l.rel=r;l.href=h;document.head.appendChild(l)}
+ const m=document.createElement('meta');m.name='theme-color';m.content='#0b2233';document.head.appendChild(m);
+ if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+ let dp=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#inst').hidden=false});
+ $('#inst').onclick=async()=>{if(!dp)return;dp.prompt();try{await dp.userChoice}catch(e){}dp=null;$('#inst').hidden=true};
+ addEventListener('appinstalled',()=>{$('#inst').hidden=true;toast('App instalado!',false)})}
 const xerr=m=>{$('#xerr').textContent=m||''};
 function doImport(text){let d;xerr('');
  try{d=dec(text)}catch(e){xerr(/vazio/.test(e.message)?'Cole o código primeiro.':'Não consegui ler o código. Ele precisa estar inteiro, começando com VNA1: — tente mandar o link ou o arquivo.');return}

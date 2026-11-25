@@ -1,0 +1,16 @@
+{
+  "name": "Verão no Azul",
+  "short_name": "Verão no Azul",
+  "description": "Gastos do verão, dias de trabalho e poupança num lugar só.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#06121e",
+  "theme_color": "#0b2233",
+  "lang": "pt-BR",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
