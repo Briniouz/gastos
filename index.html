@@ -156,6 +156,18 @@ td{padding:6px;border-bottom:1px solid var(--edge);vertical-align:middle}
 .track i{display:block;height:100%;border-radius:8px;transition:width .4s}
 .prio{display:grid;grid-template-columns:repeat(auto-fit,minmax(7.5em,1fr));gap:8px;margin-top:8px}
 .kpi .d{display:block;margin-top:2px;color:var(--ink);font-weight:600}
+.sp-sum{margin-bottom:10px}.sp-sum .top2{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}.sp-sum b{font:700 22px/1.2 Outfit,sans-serif}
+.sbar{height:10px;border-radius:6px;background:var(--glass2);border:1px solid var(--edge);overflow:hidden;position:relative}.sbar i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:var(--sun);transition:width .3s}.sbar i.ok{background:var(--ok)}.sbar i.over{background:var(--coral)}
+.sp{display:grid;gap:2px}
+.sr{display:grid;grid-template-columns:10px minmax(0,1fr) 6.5em 34px;grid-template-areas:"d n v b" ". s s s";gap:4px 8px;align-items:center;padding:6px 6px 8px 10px;border-radius:14px}
+.sr:hover,.sr:focus-within{background:var(--glass2)}
+.sr .dot{grid-area:d}.sr .n{grid-area:n;font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr .v{grid-area:v;display:flex;align-items:center;font-size:12px;color:var(--mute)}
+.sr .v input{border:0;background:transparent;min-height:30px;padding:2px 6px;border-radius:9px;width:100%;font-size:15px;font-weight:600;text-align:right;color:var(--ink);outline:none;-moz-appearance:textfield}
+.sr .v input::-webkit-inner-spin-button{-webkit-appearance:none}.sr .v input:focus{background:var(--glass);box-shadow:0 0 0 1px var(--edge)}
+.sr .ck{grid-area:b;width:30px;height:30px;border-radius:50%;border:1px solid var(--edge);background:var(--glass2);cursor:pointer;color:var(--mute);font-size:14px}
+.sr .ck[aria-pressed=true]{background:var(--ok);color:#fff;border-color:transparent}
+.sr .st{grid-area:s;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;font-size:12px;color:var(--mute)}.sr .st em{font-style:normal;white-space:nowrap}
 .pdl{display:grid;gap:4px;margin-top:10px;font-size:13px}.pdl div{display:flex;justify-content:space-between;gap:8px;padding:6px 10px;border-radius:12px;background:var(--glass2)}.pdl b{white-space:nowrap}
 .tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px;margin-top:12px}
 .tip{background:var(--glass2);border:1px solid var(--edge);border-radius:20px;padding:14px 16px}
@@ -225,6 +237,12 @@ body{padding-bottom:96px}
    <div class="cl" id="cl"></div>
    <label class="chk"><input type="checkbox" id="colchao"> Somar 10% de colchão pra imprevistos</label>
    <div class="tot"><span>Total planejado</span><span id="tot"></span></div>
+  </div>
+  <div class="glass panel" data-p="gasto">
+   <h2>Já gastei</h2>
+   <p class="note" style="margin:0 0 8px">Marque quanto já saiu de cada gasto. Se passar do planejado, o total do verão sobe junto.</p>
+   <div class="sp-sum" id="spsum"></div>
+   <div class="sp" id="spent"></div>
   </div>
   <div class="glass panel" data-p="trab">
    <h2>Trabalho</h2>
@@ -369,7 +387,8 @@ const fdy=d=>fd(d)+' '+d.getFullYear();
 const short=v=>v>=1000?(v/1000).toLocaleString('pt-BR',{maximumFractionDigits:1})+' mil':String(Math.round(v));
 const nice=x=>{const p=10**Math.floor(Math.log10(x||1));for(const k of[1,2,2.5,5,10])if(k*p>=x)return k*p;return 10*p};
 const perDay=j=>(+j.diaria||0)+(+j.entregas||0)*(+j.extra||0)-(+j.custo||0);
-const sumItems=()=>S.items.reduce((a,b)=>a+(+b.valor||0),0);
+const eff=x=>Math.max(+x.valor||0,+x.gasto||0);
+const sumItems=()=>S.items.reduce((a,b)=>a+eff(b),0);
 const metaOf=()=>sumItems()*(S.colchao?1.1:1);
 
 function sim(dias,taxa){
@@ -446,9 +465,9 @@ function renderCalc(){
  $('#pc').innerHTML=`<span>total</span><b>${brl(tot)}</b><span>${S.items.length} itens</span>`;
  $('#lg').innerHTML=cs.map(x=>`<div><i style="background:${x.col}"></i><span>${x.c}</span><b class="num">${brl(x.v)}</b><em>${Math.round(x.v/(tot||1)*100)}%</em></div>`).join('')||'<p class="note">Sem gastos ainda.</p>';
  const sob=last.tot-meta;
- $('#bars').textContent=sob>=0?brl(sob):'−'+brl(-sob);$('#bars').style.color=sob>=0?'var(--ok)':'var(--coral)';renderIdeas(r)}
- $('#prio').innerHTML=Object.entries(PRIO).map(([k,v])=>{const s=S.items.filter(x=>x.prio===k).reduce((a,b)=>a+(+b.valor||0),0);return`<div class="kpi"><b>${brl(s)}</b><span>${v}</span><span class="d">${r.per>0?Math.ceil(s/r.per)+' dias':'—'}</span></div>`}).join('');
- {const sp=k=>S.items.filter(x=>k.includes(x.prio)).reduce((a,b)=>a+(+b.valor||0),0),dd=v=>r.per>0?Math.ceil(v/r.per)+' dias':'—';
+ $('#bars').textContent=sob>=0?brl(sob):'−'+brl(-sob);$('#bars').style.color=sob>=0?'var(--ok)':'var(--coral)';renderIdeas(r);renderSpent()}
+ $('#prio').innerHTML=Object.entries(PRIO).map(([k,v])=>{const s=S.items.filter(x=>x.prio===k).reduce((a,b)=>a+eff(b),0);return`<div class="kpi"><b>${brl(s)}</b><span>${v}</span><span class="d">${r.per>0?Math.ceil(s/r.per)+' dias':'—'}</span></div>`}).join('');
+ {const sp=k=>S.items.filter(x=>k.includes(x.prio)).reduce((a,b)=>a+eff(b),0),dd=v=>r.per>0?Math.ceil(v/r.per)+' dias':'—';
   $('#pdl').innerHTML=[['Só o essencial','e'],['Essencial + Quero','eq'],['Tudo (com Talvez)','eqt']].map(([n,k])=>`<div><span>${n}</span><b>${brl(sp(k))} · ${dd(sp(k))}</b></div>`).join('')+`<p class="note" style="margin:2px 0 0">Você tem ${r.wdIn} dias de trabalho no período, a ${brl(r.per)} por dia.</p>`}
  renderMonths(r);renderScen(r);renderTips(r,sal);renderProj();
  {const f=n=>n.toLocaleString('pt-BR',{maximumFractionDigits:1});
@@ -519,6 +538,16 @@ async function askGemini(){const key=lsGet(GK),model=lsGet(GM)||GDEF,b=$('#igem'
   takeAi(JSON.parse(t),'Gemini')}
  catch(e){const st=e&&e.st;toast(st===400||st===401||st===403?'Chave inválida. Confira em "Chave".':st===404?'Modelo não encontrado. Troque o nome do modelo em "Chave".':st===429?'Limite grátis atingido, tente mais tarde.':'Não deu pra falar com o Gemini agora.',false);if(st===400||st===401||st===403||st===404)showKey()}
  b.disabled=false;b.textContent='Pedir novas ideias (Gemini)'}
+function spStat(x){const v=+x.valor||0,g=+x.gasto||0;if(g>v)return['over',`passou ${brl(g-v)}`];if(g>0&&g===v)return['ok','comprado'];if(g>0)return['',`faltam ${brl(v-g)}`];return['','ainda não']}
+function renderSpent(){
+ const tv=S.items.reduce((a,b)=>a+(+b.valor||0),0),tg=S.items.reduce((a,b)=>a+(+b.gasto||0),0),over=S.items.reduce((a,b)=>a+Math.max(0,(+b.gasto||0)-(+b.valor||0)),0),done=S.items.filter(x=>+x.gasto>=+x.valor&&+x.valor>0).length;
+ $('#spsum').innerHTML=`<div class="top2"><span><b>${brl(tg)}</b> <span class="lbl">de ${brl(tv)} planejados</span></span><span class="lbl">${done} de ${S.items.length} comprados</span></div><div class="sbar" style="margin:6px 0 4px"><i class="${tg>tv?'over':tg>=tv&&tv>0?'ok':''}" style="width:${Math.min(100,tv?tg/tv*100:0)}%"></i></div><div class="lbl">${over>0?`<span style="color:var(--coral)">Passou do planejado em ${brl(over)}</span> · `:''}falta gastar ${brl(Math.max(0,S.items.reduce((a,b)=>a+Math.max(0,(+b.valor||0)-(+b.gasto||0)),0)))}</div>`;
+ const box=$('#spent');
+ if(box.contains(document.activeElement)&&box.children.length===S.items.length){for(const x of S.items){const row=box.querySelector(`[data-sid="${x.id}"]`);if(!row)continue;const[c,t]=spStat(x),v=+x.valor||0,g=+x.gasto||0;row.querySelector('.sbar i').className=c;row.querySelector('.sbar i').style.width=Math.min(100,v?g/v*100:g>0?100:0)+'%';row.querySelector('.st em').textContent=t+' · '+brl(v);row.querySelector('.st em').style.color=c==='over'?'var(--coral)':c==='ok'?'var(--ok)':'';const ck=row.querySelector('.ck');ck.setAttribute('aria-pressed',g>=v&&v>0)}return}
+ box.innerHTML=S.items.map(x=>{const c0=S.cats[x.cat]||S.cats[0],[c,t]=spStat(x),v=+x.valor||0,g=+x.gasto||0;return`<div class="sr" data-sid="${x.id}"><span class="dot" style="background:${c0.c}"></span><span class="n" title="${esc(x.nome)}">${esc(x.nome)}</span><span class="v">R$<input type="number" min="0" step="1" inputmode="decimal" value="${g||''}" placeholder="0" aria-label="Já gastei em ${esc(x.nome)}"></span><button type="button" class="ck" aria-pressed="${g>=v&&v>0}" title="Marcar como comprado pelo valor planejado" aria-label="Marcar ${esc(x.nome)} como comprado">✓</button><div class="st"><span class="sbar"><i class="${c}" style="width:${Math.min(100,v?g/v*100:g>0?100:0)}%"></i></span><em style="color:${c==='over'?'var(--coral)':c==='ok'?'var(--ok)':''}">${t} · ${brl(v)}</em></div></div>`}).join('')||'<p class="note">Adicione gastos primeiro.</p>';
+}
+$('#spent').addEventListener('input',e=>{const row=e.target.closest('.sr');if(!row)return;const x=S.items.find(i=>i.id==row.dataset.sid);if(!x)return;x.gasto=Math.max(0,+e.target.value||0);renderCalc()});
+$('#spent').addEventListener('click',e=>{const b=e.target.closest('.ck');if(!b)return;const x=S.items.find(i=>i.id==b.closest('.sr').dataset.sid);if(!x)return;x.gasto=(+x.gasto>=+x.valor&&+x.valor>0)?0:+x.valor;b.blur();renderCalc()});
 function renderProj(){const sv=S.save,P=+sv.saldo||0,M=+sv.mensal||0;const fv=(r,n)=>r?P*(1+r)**n+M*((1+r)**n-1)/r:P+M*n;
  $('#proj tbody').innerHTML=[[6,.0083],[12,.00858],[24,.00884]].map(([n,c])=>`<tr><td>${n} meses</td><td class="num">${brl(fv(0,n))}</td><td class="num">${brl(fv(.005,n))}</td><td class="num"><b>${brl(fv(c,n))}</b></td></tr>`).join('')}
 const PAT=[['3 dias (sex a dom)',[0,5,6]],['4 dias (qui a dom)',[0,4,5,6]],['5 dias (qua a dom)',[0,3,4,5,6]],['6 dias (ter a dom)',[0,2,3,4,5,6]],['Todos os dias',[0,1,2,3,4,5,6]]];
@@ -628,10 +657,10 @@ function applySkin(){if(!S.skin)S.skin='sol';if(!S.mode)S.mode='auto';rootEl.dat
  $('#mode').value=S.mode}
 $('#skins').addEventListener('click',e=>{const b=e.target.closest('[data-sk]');if(!b)return;S.skin=b.dataset.sk;applySkin();draw();save()});
 $('#skins').addEventListener('change',e=>{if(e.target.id!=='mode')return;S.mode=e.target.value;applySkin();draw();save()});
-const PANELS=[['gastos','Gastos',2],['trab','Trabalho',1],['res','Resultado',1],['prio','Prioridades',1],['ideias','Ideias pra sobra',1],['poup','Poupança',1],['graf','Gráfico',2],['pizza','Pizza',1],['meses','Mês a mês',1],['cen','Cenários',1],['recs','Recomendações',3]];
+const PANELS=[['gastos','Gastos',2],['trab','Trabalho',1],['gasto','Já gastei',1],['res','Resultado',1],['prio','Prioridades',1],['ideias','Ideias pra sobra',1],['poup','Poupança',1],['graf','Gráfico',2],['pizza','Pizza',1],['meses','Mês a mês',1],['cen','Cenários',1],['recs','Recomendações',3]];
 const PN2=Object.fromEntries(PANELS.map(p=>[p[0],p[1]]));
 const defLayout=()=>({order:PANELS.map(p=>p[0]),hidden:[],w:Object.fromEntries(PANELS.map(p=>[p[0],p[2]])),cols:3,width:'normal'});
-function fixLayout(){const d=defLayout(),L=S.layout&&Array.isArray(S.layout.order)?S.layout:d;L.order=L.order.filter(k=>PN2[k]);for(const k of d.order)if(!L.order.includes(k))L.order.push(k);L.hidden=(L.hidden||[]).filter(k=>PN2[k]);L.w={...d.w,...(L.w||{})};L.cols=L.cols||3;L.width=L.width||'normal';S.layout=L}
+function fixLayout(){const d=defLayout(),L=S.layout&&Array.isArray(S.layout.order)?S.layout:d;L.order=L.order.filter(k=>PN2[k]);d.order.forEach((k,i)=>{if(!L.order.includes(k)){const prev=d.order[i-1],pi=L.order.indexOf(prev);L.order.splice(pi>=0?pi+1:L.order.length,0,k)}});L.hidden=(L.hidden||[]).filter(k=>PN2[k]);L.w={...d.w,...(L.w||{})};L.cols=L.cols||3;L.width=L.width||'normal';S.layout=L}
 const board=$('#board'),panels=Object.fromEntries([...board.children].map(e=>[e.dataset.p,e]));
 for(const[k,e]of Object.entries(panels))e.insertAdjacentHTML('afterbegin',`<div class="pt"><b>${PN2[k]}</b><button type="button" data-mv="-1" aria-label="Mover pra trás">◀ Antes</button><button type="button" data-mv="1" aria-label="Mover pra frente">Depois ▶</button><button type="button" data-wd></button><button type="button" data-hd>Esconder</button></div>`);
 let editing=false;
