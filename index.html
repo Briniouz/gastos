@@ -23,6 +23,7 @@
 --ok:light-dark(#248A3D,#30D158);--bad:light-dark(#D70015,#FF453A);--warn:light-dark(#C93400,#FF9F0A);
 --sea:light-dark(#0071A4,#64D2FF);--accent:#0A84FF;--on-accent:#fff}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+:root[data-mode=light]{color-scheme:light}:root[data-mode=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 [hidden]{display:none!important}
 html,body{margin:0;height:100%}
@@ -81,10 +82,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 .tool{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px 10px;flex-wrap:wrap}
 .tool h1{font-size:20px;font-weight:700}
 .tool .sub{font-size:12px;color:var(--mute)}
-.kp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:0 20px 14px}
+.kp{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:0 20px 14px}
 .k{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;box-shadow:var(--shadow2)}
 .k span{display:block;font-size:11px;font-weight:500;color:var(--mute)}
 .k b{display:block;font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.15;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.k.kin{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}.kin-r{display:flex;align-items:baseline;gap:4px}.kin-r em{font-style:normal;font-size:15px;font-weight:600;color:var(--mute)}
+.kin-r input{border:0;background:transparent;padding:0 2px;min-height:0;font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.15;font-variant-numeric:tabular-nums;width:100%;box-shadow:none;border-radius:6px}
+.kin-r input:focus{background:var(--card2);box-shadow:none}.kin-r input::placeholder{color:var(--faint)}
 .k small{display:block;font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .views{flex:1;min-height:0;padding:0 20px 20px}
 .view{display:none;height:100%;gap:12px}
@@ -215,7 +219,8 @@ tr.cur td{font-weight:600}
  .it .dot{grid-area:d}.it .nm{grid-area:n}.it .chip{grid-area:c;justify-self:start}.it .pr{grid-area:p;justify-self:start}.it .vl{grid-area:v}.it .del{grid-area:x;opacity:1}
  .eadd{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 }
-@media(max-width:520px){.kp{grid-template-columns:repeat(3,minmax(0,1fr))}.k b{font-size:15px}.pie{grid-template-columns:minmax(0,1fr)}.pw{margin:0 auto}.earn-k{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1180px){.kp{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.kp{grid-template-columns:repeat(2,minmax(0,1fr))}.k b{font-size:15px}.pie{grid-template-columns:minmax(0,1fr)}.pw{margin:0 auto}.earn-k{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -251,7 +256,8 @@ tr.cur td{font-weight:600}
    <div class="seg" id="scope" role="group" aria-label="Quais gastos entram na conta"><button type="button" data-s="e">Só o essencial</button><button type="button" data-s="eq">Essencial + Quero</button><button type="button" data-s="eqt">Tudo</button></div>
   </header>
   <section class="kp" aria-label="Resumo">
-   <div class="k"><span>Gastos</span><b id="kG">R$ 0</b><small id="kGs"></small></div>
+   <div class="k kin"><span>Na conta hoje</span><label class="kin-r" style="margin:0" for="conta"><em>R$</em><input type="number" id="conta" min="0" step="1" inputmode="decimal" placeholder="digite" aria-label="Quanto tenho na conta hoje"></label><small id="contas">deixe vazio pra usar só a estimativa</small></div>
+   <div class="k"><span id="kGl">Gastos</span><b id="kG">R$ 0</b><small id="kGs"></small></div>
    <div class="k"><span>Na data limite</span><b id="big">R$ 0</b><small id="bigl"></small></div>
    <div class="k"><span id="kSl">Sobra</span><b id="kS">R$ 0</b><small id="kSs"></small></div>
   </section>
@@ -299,7 +305,7 @@ tr.cur td{font-weight:600}
        <input type="number" id="av" placeholder="R$" min="0" step="1" aria-label="Valor" inputmode="decimal" required>
        <select id="ac" aria-label="Categoria"></select>
        <select id="ap" aria-label="Prioridade"><option value="e">Essencial</option><option value="q" selected>Quero</option><option value="t">Talvez</option></select>
-       <button class="btn pri" type="submit">Adicionar</button>
+       <button class="btn pri" type="button" id="addb">Adicionar</button>
       </form>
       <div class="nc" id="nc" hidden><input id="ncn" type="text" placeholder="Nome da nova categoria" maxlength="24" aria-label="Nome da nova categoria"><button class="btn pri" type="button" id="ncok">Criar</button><button class="btn" type="button" id="ncx">Cancelar</button></div>
       <div class="cl" id="cl"></div>
@@ -341,7 +347,7 @@ tr.cur td{font-weight:600}
        <div><label for="ed">Dia</label><input type="date" id="ed" required></div>
        <div><label for="ee">Entregas</label><input type="number" id="ee" min="0" step="1" inputmode="numeric"></div>
        <div><label for="ev">Ganhei (R$, bruto)</label><input type="number" id="ev" min="0" step="1" inputmode="decimal" required></div>
-       <button class="btn pri" type="submit">Registrar</button>
+       <button class="btn pri" type="button" id="eaddb">Registrar</button>
       </form>
       <div class="elog" id="elog"></div>
      </div>
@@ -455,19 +461,21 @@ const perDay=j=>(+j.diaria||0)+(+j.entregas||0)*(+j.extra||0)-(+j.custo||0);
 const eff=x=>Math.max(+x.valor||0,+x.gasto||0);
 const inScope=x=>(S.scope||'eqt').includes(x.prio);
 const sumItems=()=>S.items.filter(inScope).reduce((a,b)=>a+eff(b),0);
-const metaOf=()=>sumItems()*(S.colchao?1.1:1);
+const hasConta=()=>S.conta!=null&&S.conta!==''&&!isNaN(+S.conta);
+const metaOf=()=>(hasConta()?S.items.filter(inScope).reduce((a,b)=>a+Math.max(0,(+b.valor||0)-(+b.gasto||0)),0):sumItems())*(S.colchao?1.1:1);
 
 function sim(dias,taxa){
  const j=S.job,sv=S.save;dias=dias||j.dias;taxa=taxa==null?+sv.taxa||0:taxa;
  const per=perDay(j),ini=pd(j.ini);let fim=pd(j.fim);if(fim<ini)fim=new Date(ini);
  const meta=metaOf(),f=Math.pow(1+taxa/100,1/30);
- const EM={};let cut=null,w0=0;if(S.useEarn!==false&&S.earn.length){for(const e of S.earn){const net=(+e.v||0)-(+j.custo||0);if(pd(e.d)<ini)w0+=net;else EM[e.d]=(EM[e.d]||0)+net;if(!cut||e.d>cut)cut=e.d}}
+ const CM=hasConta(),cd=CM?(S.contaDate||iso(new Date())):'';
+ const EM={};let cut=null,w0=CM?+S.conta:0;if(S.useEarn!==false&&S.earn.length){for(const e of S.earn){if(CM&&e.d<=cd)continue;const net=(+e.v||0)-(+j.custo||0);if(pd(e.d)<ini)w0+=net;else EM[e.d]=(EM[e.d]||0)+net;if(!cut||e.d>cut)cut=e.d}}
  let w=w0,s=+sv.saldo||0,rend=0,count=0,cross=-1,need=0;const out=[];
  const d=new Date(ini),lim=Math.round((fim-ini)/864e5)+366;
  for(let i=0;i<=lim;i++){
   const hol=j.feriados&&((d.getMonth()===11&&d.getDate()===25)||(d.getMonth()===0&&d.getDate()===1));
   const isW=!!dias[d.getDay()]&&!hol;
-  const ds=iso(d);if(cut&&ds<=cut){if(ds in EM){w+=EM[ds];count++}}else if(isW){w+=per;count++}
+  const ds=iso(d);if(CM&&ds<=cd){}else if(cut&&ds<=cut){if(ds in EM){w+=EM[ds];count++}}else if(isW){w+=per;count++}
   const g=s*(f-1);s+=g;rend+=g;
   if(d.getDate()===5&&i>0)s+=+sv.mensal||0;
   const tot=w+(sv.usar?s:0),inR=d<=fim;
@@ -510,7 +518,7 @@ function renderCalc(){
  const r=cur=sim(),j=S.job,sv=S.save,last=r.last,meta=r.meta;
  const nd=j.dias.filter(Boolean).length,sal=r.per*nd*52/12;
  animate(last.tot);
- $('#bigl').textContent=`até ${fdy(r.fim)} · ${sv.usar?'trabalho + poupança':'só trabalho'}`;
+ $('#bigl').textContent=`até ${fdy(r.fim)} · ${hasConta()?'conta + ':''}${sv.usar?'trabalho + poupança':'trabalho'}`;
  let st,ok=true;
  if(meta<=0)st='Adicione gastos pra ver a sua meta.';
  else if(r.crossIn&&r.need===0)st=`Sua poupança já cobre os ${brl(meta)} de gastos. Tudo que você trabalhar é extra.`;
@@ -532,7 +540,8 @@ function renderCalc(){
  $('#pc').innerHTML=`<span>total</span><b>${brl(tot)}</b><span>${S.items.filter(inScope).length} itens</span>`;
  $('#lg').innerHTML=cs.map(x=>`<div><i style="background:${x.col}"></i><span>${x.c}</span><b class="num">${brl(x.v)}</b><em>${Math.round(x.v/(tot||1)*100)}%</em></div>`).join('')||'<p class="note">Sem gastos ainda.</p>';
  const sob=last.tot-meta;
- $('#kS').textContent=(sob<0?'−':'')+brl(Math.abs(sob));$('#kS').style.color=meta<=0?'':sob>=0?'var(--ok)':'var(--bad)';$('#kSl').textContent=sob>=0?'Sobra':'Falta';$('#kSs').textContent=meta<=0?'adicione gastos':sob>=0?(r.crossIn?'meta batida em '+fd(r.out[r.cross].d):''):(r.cross>=0?'no ritmo, só em '+fd(r.out[r.cross].d):'não fecha nem em 1 ano');$('#kG').textContent=brl(meta);$('#kGs').textContent=({e:'só o essencial',eq:'essencial + quero',eqt:'todos os itens'})[S.scope]+(S.colchao?' · +10% colchão':'');renderIdeas(r);renderSpent()}
+ $('#kS').textContent=(sob<0?'−':'')+brl(Math.abs(sob));$('#kS').style.color=meta<=0?'':sob>=0?'var(--ok)':'var(--bad)';$('#kSl').textContent=sob>=0?'Sobra':'Falta';$('#kSs').textContent=meta<=0?'adicione gastos':sob>=0?(r.crossIn?'meta batida em '+fd(r.out[r.cross].d):''):(r.cross>=0?'no ritmo, só em '+fd(r.out[r.cross].d):'não fecha nem em 1 ano');$('#kG').textContent=brl(meta);$('#kGl').textContent=hasConta()?'Falta gastar':'Gastos';$('#kGs').textContent=({e:'só o essencial',eq:'essencial + quero',eqt:'todos os itens'})[S.scope]+(hasConta()?' · tirando o que já gastou':'')+(S.colchao?' · +10%':'');
+ {const c=$('#conta');if(document.activeElement!==c)c.value=hasConta()?+S.conta:'';$('#contas').textContent=hasConta()?`atualizado em ${fd(pd(S.contaDate||iso(new Date())))} · as contas partem daqui`:'deixe vazio pra usar só a estimativa'}renderIdeas(r);renderSpent()}
  $('#prio').innerHTML=Object.entries(PRIO).map(([k,v])=>{const s=S.items.filter(x=>x.prio===k).reduce((a,b)=>a+eff(b),0);return`<div class="kpi"><b>${brl(s)}</b><span>${v}</span><span class="d">${r.per>0?Math.ceil(s/r.per)+' dias':'—'}</span></div>`}).join('');
  {const sp=k=>S.items.filter(x=>k.includes(x.prio)).reduce((a,b)=>a+eff(b),0),dd=v=>r.per>0?Math.ceil(v/r.per)+' dias':'—';
   $('#pdl').innerHTML=[['Só o essencial','e'],['Essencial + Quero','eq'],['Tudo (com Talvez)','eqt']].map(([n,k])=>`<div><span>${n}</span><b>${brl(sp(k))} · ${dd(sp(k))}</b></div>`).join('')+`<p class="note" style="margin:2px 0 0">Você tem ${r.wdIn} dias de trabalho no período, a ${brl(r.per)} por dia.</p>`}
@@ -711,7 +720,9 @@ $('#ac').addEventListener('change',e=>{if(e.target.value==='new')openNew('add')}
 $('#ncok').onclick=createCat;$('#ncx').onclick=closeNew;
 $('#ncn').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();createCat()}else if(e.key==='Escape')closeNew()});
 $('#cl').addEventListener('click',e=>{const b=e.target.closest('[data-rc]');if(!b)return;const i=+b.dataset.rc;if(S.items.some(x=>+x.cat===i))return;snapUndo();S.cats.splice(i,1);S.items.forEach(x=>{if(+x.cat>i)x.cat--});renderItems();renderCalc();toast('Categoria apagada',true)});
-$('#addf').addEventListener('submit',e=>{e.preventDefault();const n=$('#an').value.trim(),v=+$('#av').value;if(!n||!(v>=0))return;S.items.push({id:S.nid++,nome:n,valor:v,cat:$('#ac').value==='new'?0:+$('#ac').value,prio:$('#ap').value});$('#an').value='';$('#av').value='';renderItems();renderCalc();$('#an').focus()});
+const addItem=()=>{const n=$('#an').value.trim(),v=+$('#av').value;if(!n||!(v>=0))return;S.items.push({id:S.nid++,nome:n,valor:v,cat:$('#ac').value==='new'?0:+$('#ac').value,prio:$('#ap').value});$('#an').value='';$('#av').value='';renderItems();renderCalc();$('#an').focus()};
+$('#addb').onclick=addItem;$('#addf').addEventListener('submit',e=>{e.preventDefault();addItem()});
+$('#addf').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'){e.preventDefault();addItem()}});
 $('#reset').onclick=()=>{snapUndo();S=DEF();fillControls();renderItems();renderCalc();toast('Exemplo restaurado',true)};
 $('#copy').onclick=()=>{const r=cur,l=r.last;const txt=`Verão no Azul\nGastos planejados: ${brl(r.meta)}\nTrabalho: ${brl2(r.per)} líquido por dia, ${r.wdIn} dias de ${fd(pd(S.job.ini))} a ${fd(r.fim)}\nTotal na data limite: ${brl(l.tot)} (trabalho ${brl(l.w)}${S.save.usar?` + poupança ${brl(l.s)}`:''})\n${$('#status').textContent}`;
  const done=()=>toast('Resumo copiado',false);try{navigator.clipboard.writeText(txt).then(done,()=>toast('Não deu pra copiar aqui',false))}catch(err){toast('Não deu pra copiar aqui',false)}};
@@ -749,7 +760,7 @@ if(/^#import=/.test(location.hash)){const c=location.hash.slice(8);$('#xp').hidd
 const ACC=[['blue','#0A84FF','Azul'],['purple','#BF5AF2','Roxo'],['pink','#FF375F','Rosa'],['red','#FF453A','Vermelho'],['orange','#FF9F0A','Laranja'],['yellow','#FFD60A','Amarelo'],['green','#30D158','Verde'],['graphite','#8E8E93','Grafite']];
 const rootEl=document.documentElement,viewerTheme=rootEl.dataset.theme;
 function applyLook(){const a=ACC.find(x=>x[0]===S.accent)||ACC[0];rootEl.style.setProperty('--accent',a[1]);rootEl.style.setProperty('--on-accent',a[0]==='yellow'?'#1D1D1F':'#fff');
- if(!S.mode||S.mode==='auto'){if(viewerTheme)rootEl.dataset.theme=viewerTheme;else delete rootEl.dataset.theme}else rootEl.dataset.theme=S.mode;
+ if(!S.mode||S.mode==='auto')delete rootEl.dataset.mode;else rootEl.dataset.mode=S.mode;
  $('#accents').innerHTML=ACC.map(([k,col,n])=>`<button type="button" data-ac="${k}" style="background:${col}" title="${n}" aria-label="Destaque ${n}" aria-pressed="${a[0]===k}"></button>`).join('');
  for(const b of $('#modes').children)b.setAttribute('aria-pressed',b.dataset.m===(S.mode||'auto'))}
 $('#accents').onclick=e=>{const b=e.target.closest('[data-ac]');if(!b)return;S.accent=b.dataset.ac;applyLook();draw();save()};
@@ -776,11 +787,12 @@ function renderEarn(r){
  const after=[tds,r.cut||''].sort().pop();
  const left=r.R.filter(o=>iso(o.d)>after&&j.dias[o.d.getDay()]&&!isHol(o.d)).length;
  const falta=use?Math.max(0,r.last.w-net):Math.max(0,r.last.w);
- const metaGap=Math.max(0,r.meta-net-(S.save.usar?+S.save.saldo||0:0));
+ const metaGap=Math.max(0,r.meta-(hasConta()?+S.conta:net)-(S.save.usar?+S.save.saldo||0:0));
  $('#earnk').innerHTML=[[brl(g),`já ganhei · ${n} ${n===1?'dia':'dias'}`],[brl(net),`líquido (− ${brl(+j.custo||0)}/dia)`],[brl(left*r.per),`ainda vem · ${left} dias`]].map(([b,s])=>`<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join('');
  const tot=net+left*r.per;$('#earnbar').style.width=(tot>0?Math.min(100,Math.max(0,net/tot*100)):0)+'%';$('#earnbar').className=net>=tot&&tot>0?'ok':'';
  let msg=[];
  if(!use)msg.push('Desligado: as contas usam só a estimativa.');
+ if(hasConta())msg.push(`Os dias até ${fd(pd(S.contaDate||tds))} já estão no saldo da conta.`);
  if(wdTo>0&&n>0){const d=g-expB;msg.push(`Até hoje o plano previa ${brl(expB)} brutos em ${wdTo} dias: você está <b style="color:${d>=0?'var(--ok)':'var(--bad)'}">${brl(Math.abs(d))} ${d>=0?'à frente':'atrás'}</b>.`)}
  else if(wdTo===0)msg.push(`O trabalho começa em ${fd(pd(j.ini))}.`);
  if(n>0)msg.push(`Média ${brl2(g/n)} por dia.`);
@@ -792,9 +804,12 @@ function renderEarn(r){
 }
 $('#ee').addEventListener('input',()=>{if(!evTouched)$('#ev').value=Math.round((+S.job.diaria||0)+(+$('#ee').value||0)*(+S.job.extra||0))});
 $('#ev').addEventListener('input',()=>{evTouched=true});
-$('#eaddf').addEventListener('submit',e=>{e.preventDefault();const d=$('#ed').value,v=+$('#ev').value;if(!d||!(v>=0))return;S.earn.push({id:S.eid++,d,ent:+$('#ee').value||0,v});evTouched=false;
- const nx=pd(d);nx.setDate(nx.getDate()+1);$('#ed').value=iso(nx)<=today()?iso(nx):today();renderCalc();toast(`Registrado: ${brl2(v)} em ${fd(pd(d))}`,false)});
+const addEarn=()=>{const d=$('#ed').value,v=+$('#ev').value;if(!d){$('#ed').focus();return toast('Escolha o dia',false)}if($('#ev').value===''||!(v>=0)){$('#ev').focus();return toast('Coloque quanto ganhou',false)}S.earn.push({id:S.eid++,d,ent:+$('#ee').value||0,v});evTouched=false;
+ const nx=pd(d);nx.setDate(nx.getDate()+1);$('#ed').value=iso(nx)<=today()?iso(nx):today();renderCalc();toast(`Registrado: ${brl2(v)} em ${fd(pd(d))}`,false)};
+$('#eaddb').onclick=addEarn;$('#eaddf').addEventListener('submit',e=>{e.preventDefault();addEarn()});
+$('#eaddf').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'){e.preventDefault();addEarn()}});
 $('#elog').addEventListener('click',e=>{const b=e.target.closest('[data-ed]');if(!b)return;snapUndo();S.earn=S.earn.filter(x=>x.id!=b.dataset.ed);renderCalc();toast('Registro apagado',true)});
+$('#conta').addEventListener('input',e=>{const v=e.target.value.trim();if(v===''){S.conta=null}else{S.conta=Math.max(0,+v||0);S.contaDate=today()}renderCalc()});
 $('#useEarn').addEventListener('change',e=>{S.useEarn=e.target.checked;renderCalc()});
 const _fc=fillControls;fillControls=function(){_fc();applyLook();paintScope();showView(S.view||'geral');$('#useEarn').checked=S.useEarn!==false;if(!$('#ed').value)$('#ed').value=today();$('#ee').value=S.job.entregas;evTouched=false};
 fillControls();renderItems();renderCalc();
